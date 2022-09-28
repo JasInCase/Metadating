@@ -17,7 +17,7 @@ Within that directory, you can run the following commands:
 - Runs both the frontend and backend in parallel.
 
 
-Make sure to have the following libraries installed:
+<!-- Make sure to have the following libraries installed:
 (I recommend starting a python virtual environment in the main project directory for these)
 
 - flask
@@ -35,7 +35,10 @@ Make sure to have the following libraries installed:
 - axios
   - npm install axios
 - pylint-flask
-  - pip install pylint pylint-flask
+  - pip install pylint pylint-flask -->
+
+Use the script "installrequirements" to install the required libraries.
+> ./installrequirements <wsl | mac>
 
 The command to run backend directly is 
 > FLASK_DEBUG=TRUE FLASK_APP=metabackend flask run --host 0.0.0.0 --port 8000

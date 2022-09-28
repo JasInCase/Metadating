@@ -1,0 +1,53 @@
+#!/bin/bash
+# Install requirements for the metadating app
+# Stop on errors
+# See https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuo pipefail
+set -x
+# Sanity check command line options
+usage() {
+  echo "Usage: $0 (wsl|mac)"
+  echo "This script will install the required libraries for the React frontend and flask backend."
+}
+if [ $# -ne 1 ]; then
+  usage
+  exit 1
+fi
+# Parse argument.  $1 is the first argument
+case $1 in
+  "wsl")
+    echo "Creating python virtual environment:"
+    python3 -m venv env
+    source env/bin/activate
+    echo "Installing flask and other python libraries:"
+    pip install flask
+    pip install python-dotenv
+    pip install requests
+    pip install pylint pylint-flask
+    echo "Installing node, npm, yarn, and axios"
+    sudo apt-get update
+    sudo apt-get install nodejs
+    sudo apt-get install npm
+    npm install --global yarn
+    npm install axios
+    ;;
+  "mac")
+    echo "Creating python virtual environment:"
+    python3 -m venv env
+    source env/bin/activate
+    echo "Installing flask and other python libraries:"
+    pip install flask
+    pip install python-dotenv
+    pip install requests
+    pip install pylint pylint-flask
+    echo "Installing node, npm, yarn, and axios"
+    brew update
+    brew install node
+    npm install --global yarn
+    npm install axios
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+esac
