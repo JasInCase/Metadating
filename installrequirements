@@ -29,7 +29,6 @@ case $1 in
     sudo apt-get install nodejs
     sudo apt-get install npm
     npm install --global yarn
-    npm install axios
     ;;
   "mac")
     echo "Creating python virtual environment:"
@@ -44,7 +43,6 @@ case $1 in
     brew update
     brew install node
     npm install --global yarn
-    npm install axios
     ;;
   *)
     usage
@@ -52,6 +50,5 @@ case $1 in
     ;;
 esac
 
-npm install
 cd metadating-frontend
 npm install
