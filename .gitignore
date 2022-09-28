@@ -1,0 +1,71 @@
+# Gitignore file for the Metadating project
+
+*.pem
+*.db
+var/
+
+node_modules/
+cookies.txt
+session.json
+bundle.js
+*.js.map
+
+
+# Python
+*.pyc
+__pycache__/
+*.egg-info*
+dist/
+env/
+venv/
+venv3/
+.venv/
+.pytest_cache
+
+# JavaScript
+bundle.js
+*node_modules*
+*/var/*
+
+# Virtual Machines
+.vagrant/
+
+# Text editors and IDEs
+*~
+*.lock
+*.swp
+.vscode
+.ropeproject/
+.vscode/
+.idea
+
+# macOS system files
+*.DS_Store
+
+# Google Drive and Dropbox
+Icon
+.dropbox*
+
+# From React
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
