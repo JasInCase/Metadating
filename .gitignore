@@ -69,3 +69,7 @@ Icon
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# package-lock
+package-lock.json
+metadating-frontend/package-lock.json
