@@ -13,7 +13,11 @@ export async function getMessageFromAPI() {
 
 }
 
-
+export async function sendMessageToAPI(name: string, age: string, gender: string, interests: string) {
+    let data = [name, age, gender, interests]
+    const response = await axios.post('/api/v1/recieved/', data);
+    return response.data.string;
+}
 
 const FormPage = () => {
 
@@ -63,10 +67,20 @@ const FormPage = () => {
 
     // This function is triggered when the Submit buttion is clicked
     const submit = () => {
-        console.log(name)
-        console.log(age)
-        console.log(gender)
-        console.log(interests)
+        sendMessageToAPI(name, age, gender, interests).then((apiMessage) => {
+
+            if (apiMessage == "") {
+                console.log("An error occurred when sending to the api");
+                return "Error sending to api";
+            } else {
+                return apiMessage;
+            }
+
+        }).then((apiMessage) => {
+
+            console.log(apiMessage);
+
+        });
     };
 
     return (
