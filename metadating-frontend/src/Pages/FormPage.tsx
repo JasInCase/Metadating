@@ -21,7 +21,7 @@ export async function sendMessageToAPI(name: string, age: string, gender: string
 
 const FormPage = () => {
 
-    const [message, setMessage] = React.useState("");
+    const [message, setMessage] = useState("");
     const [name, setName] = useState('');
     const [age, setAge] = useState('');
     const [gender, setGender] = useState('');
