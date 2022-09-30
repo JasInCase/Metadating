@@ -44,7 +44,7 @@ const ConversationPage = () => {
     
     return (
 
-        <div className='bg-pink-300'>
+        <div>
             <div>
                 <Container maxWidth="md" fixed={true} >
 
@@ -54,14 +54,14 @@ const ConversationPage = () => {
 
                         { messages.map((message: string, index : number) => (
                         
-                            <div>
+                            <div className='outline-1 outline m-10 rounded-3xl'>
 
                                 {index % 2 === 0 && 
 
 
-                                    <ListItem style={{display:'flex', justifyContent:'flex-end'}}>
+                                    <ListItem className="bg-blue-200 rounded-3xl" style={{display:'flex', justifyContent:'flex-end'}}>
                                         <Typography> {message} </Typography>
-                                        <ListItemAvatar>
+                                        <ListItemAvatar className='m-2'>
                                             <Avatar alt="user1" src="https://avatars.dicebear.com/api/male/boy3.svg"/>
                                         </ListItemAvatar>
                                     </ListItem>
@@ -70,8 +70,8 @@ const ConversationPage = () => {
                                 {index % 2 === 1 && 
 
 
-                                    <ListItem>
-                                        <ListItemAvatar>
+                                    <ListItem className="bg-pink-200 rounded-3xl">
+                                        <ListItemAvatar className='m-2'>
                                             <Avatar alt="user2" src="https://avatars.dicebear.com/api/female/girl12.svg"/>
                                         </ListItemAvatar>
                                         <Typography> {message} </Typography>
