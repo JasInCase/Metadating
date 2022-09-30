@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 
 export async function getMessageFromAPI() {
@@ -18,12 +18,16 @@ export async function getMessageFromAPI() {
 const FormPage = () => {
 
     const [message, setMessage] = React.useState("");
+    const [name, setName] = useState('');
+    const [age, setAge] = useState('');
+    const [gender, setGender] = useState('');
+    const [interests, setInterests] = useState('');
 
     // By default this will run when mounted and on any component update
     React.useEffect(() => {
 
-        getMessageFromAPI().then( (apiMessage) => {
-            
+        getMessageFromAPI().then((apiMessage) => {
+
             if (apiMessage == "") {
                 console.log("An error occurred when reaching the api");
                 return "Error reaching api";
@@ -31,7 +35,7 @@ const FormPage = () => {
                 return apiMessage;
             }
 
-        }).then( (apiMessage) => {
+        }).then((apiMessage) => {
 
             setMessage(apiMessage);
 
@@ -39,11 +43,66 @@ const FormPage = () => {
 
     }/*, [runIfThisVarChanges]*/)
 
+    // This function is called when the input changes
+    const nameInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const enteredName = event.target.value;
+        setName(enteredName);
+    };
+    const ageInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const enteredAge = event.target.value;
+        setAge(enteredAge);
+    };
+    const genderInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const enteredGender = event.target.value;
+        setGender(enteredGender);
+    };
+    const interestsInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const enteredInterests = event.target.value;
+        setInterests(enteredInterests);
+    };
+
+    // This function is triggered when the Submit buttion is clicked
+    const submit = () => {
+        console.log(name)
+        console.log(age)
+        console.log(gender)
+        console.log(interests)
+    };
+
     return (
 
         <div>
             <h2>Form Page</h2>
-            <h2>The api message is: { message } </h2>
+            <div className="container">
+                <div className="wrapper">
+                    <input
+                        value={name}
+                        onChange={nameInputHandler}
+                        placeholder="Name"
+                        className="input"
+                    />
+                    <input
+                        value={age}
+                        onChange={ageInputHandler}
+                        placeholder="Age"
+                        className="input"
+                    />
+                    <input
+                        value={gender}
+                        onChange={genderInputHandler}
+                        placeholder="Gender"
+                        className="input"
+                    />
+                    <input
+                        value={interests}
+                        onChange={interestsInputHandler}
+                        placeholder="Interests"
+                        className="input"
+                    />
+                    <button onClick={submit}>Submit</button>
+                </div>
+            </div>
+            <h2>The api message is: {message} </h2>
         </div>
 
     )
