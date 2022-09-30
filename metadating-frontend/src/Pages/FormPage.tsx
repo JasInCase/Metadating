@@ -24,7 +24,7 @@ const FormPage = () => {
 
         getMessageFromAPI().then( (apiMessage) => {
             
-            if (apiMessage === "") {
+            if (apiMessage == "") {
                 console.log("An error occurred when reaching the api");
                 return "Error reaching api";
             } else {
@@ -42,7 +42,7 @@ const FormPage = () => {
     return (
 
         <div>
-            <p className='text-center text-pink-500 font-bold text-5xl'>Form Page</p>
+            <h2>Form Page</h2>
             <h2>The api message is: { message } </h2>
         </div>
 
