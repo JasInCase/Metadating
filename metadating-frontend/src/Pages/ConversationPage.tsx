@@ -1,5 +1,9 @@
-import React, { useState } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react';
+import axios from 'axios';
+import Container from '@mui/material/Container';
+import List from '@mui/material/List';
+import { Avatar, ListItem, ListItemAvatar, Typography } from '@mui/material';
+// import '../index.css';
 
 const callMessageAPI = async (userMessage: string) => {
     const response = await axios.post('/api/v1/message/', {
@@ -12,7 +16,7 @@ const ConversationPage = () => {
     
     const [userMessage, setUserMessage] = useState("");
     const [messages, setMessages] = useState<string[]>([]);
-    const listMessages = messages.map(message => <p>{message}</p>)
+    // const listMessages = messages.map(message => <p>{message}</p>)
 
     // This function is called when the user is typing changes
     const userMessageInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +30,7 @@ const ConversationPage = () => {
         setMessages(messagesWithUserMessage);
 
         callMessageAPI(userMessage).then((apiMessage) => {
-            if (apiMessage == "") {
+            if (apiMessage === "") {
                 console.log("An error occurred when reaching the api");
                 return "Error reaching api";
             } else {
@@ -40,19 +44,59 @@ const ConversationPage = () => {
     
     return (
 
-        <div>
+        <div className='bg-pink-300'>
             <div>
-            <h2>Conversation Page</h2>
-                {listMessages}
-                <input
-                    value={userMessage}
-                    onChange={userMessageInputHandler}
-                    placeholder="Message"
-                    className="input"
-                />
-                <button onClick={sendMessage}>
-                    Send Message
-                </button>
+                <Container maxWidth="md" fixed={true} >
+
+                    <Typography variant="h3" component="h3" align="center"> Conversation Feed </Typography>
+                    
+                    <List sx={{ width : '100%'}}>
+
+                        { messages.map((message: string, index : number) => (
+                        
+                            <div>
+
+                                {index % 2 === 0 && 
+
+
+                                    <ListItem style={{display:'flex', justifyContent:'flex-end'}}>
+                                        <Typography> {message} </Typography>
+                                        <ListItemAvatar>
+                                            <Avatar alt="user1" src="https://avatars.dicebear.com/api/male/boy3.svg"/>
+                                        </ListItemAvatar>
+                                    </ListItem>
+                                }
+
+                                {index % 2 === 1 && 
+
+
+                                    <ListItem>
+                                        <ListItemAvatar>
+                                            <Avatar alt="user2" src="https://avatars.dicebear.com/api/female/girl12.svg"/>
+                                        </ListItemAvatar>
+                                        <Typography> {message} </Typography>
+                                    </ListItem>
+                                }
+
+                            </div>
+
+                        ))}
+
+                    </List>
+                    
+                    <input
+                        value={userMessage}
+                        onChange={userMessageInputHandler}
+                        placeholder="Message"
+                        className="input" 
+                        />
+
+                    <button onClick={sendMessage}>
+                        Send Message
+                    </button>
+
+                </Container>
+                
             </div>
         </div>
 

@@ -32,7 +32,7 @@ const FormPage = () => {
 
         getMessageFromAPI().then((apiMessage) => {
 
-            if (apiMessage == "") {
+            if (apiMessage === "") {
                 console.log("An error occurred when reaching the api");
                 return "Error reaching api";
             } else {
@@ -69,7 +69,7 @@ const FormPage = () => {
     const submit = () => {
         sendMessageToAPI(name, age, gender, interests).then((apiMessage) => {
 
-            if (apiMessage == "") {
+            if (apiMessage === "") {
                 console.log("An error occurred when sending to the api");
                 return "Error sending to api";
             } else {
