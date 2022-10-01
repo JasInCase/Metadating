@@ -54,7 +54,7 @@ const ConversationPage = () => {
 
                         { messages.map((message: string, index : number) => (
                         
-                            <div className='outline-1 outline m-10 rounded-3xl'>
+                            <div className='m-10 rounded-3xl shadow-lg'>
 
                                 {index % 2 === 0 && 
 
