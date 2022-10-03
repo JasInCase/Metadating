@@ -94,7 +94,7 @@ const ConversationPage = () => {
                                 {index % 2 === 0 && 
 
 
-                                    <ListItem className="bg-blue-400 rounded-3xl" style={{display:'flex', justifyContent:'flex-end'}}>
+                                    <ListItem className="bg-blue-400 animate-ping-once rounded-3xl" style={{display:'flex', justifyContent:'flex-end'}}>
                                         
                                         <Typography className="py-2" sx={{maxWidth: '55%', wordWrap:'break-word' }} > {message} </Typography> 
                                         <ListItemAvatar className='m-2 hover:shadow-2xl'>
@@ -107,7 +107,7 @@ const ConversationPage = () => {
                                 {index % 2 === 1 && 
 
 
-                                    <ListItem className="bg-slate-200 rounded-3xl">
+                                    <ListItem className="bg-slate-200 rounded-3xl animate-ping-once">
                                         <ListItemAvatar className='m-2 hover:shadow-2xl'>
                                             <Avatar alt="user2" src="https://avatars.dicebear.com/api/female/girl12.svg"/>
                                         </ListItemAvatar>
