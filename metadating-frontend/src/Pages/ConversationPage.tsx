@@ -10,7 +10,7 @@ const callMessageAPI = async (userMessage: string) => {
     const response = await axios.post('/api/v1/message/', {
         userMessage: userMessage
     });
-    return response.data.apiMessage;
+    return response;
 }
 
 const ConversationPage = () => {
@@ -48,22 +48,19 @@ const ConversationPage = () => {
         if (userMessage === "") { // Prevents empty string send
             return;
         }
-        
+
         setDisableInput(true);
-        
         let messagesWithUserMessage = [...messages, userMessage];
         setMessages(messagesWithUserMessage);
 
-        callMessageAPI(userMessage).then((apiMessage) => {
-            // NOTE: This is probably wrong. We should look at the response status code instead.
-            if (apiMessage === "") {
-                console.log("An error occurred when reaching the api");
-                return "Error reaching api";
+        callMessageAPI(userMessage).then(apiResponse => {
+            if (apiResponse.status == 200) {
+                return apiResponse.data.apiMessage;
             } else {
-                return apiMessage;
+                return "Error reaching api";
             }
     
-            }).then((apiMessage) => {
+            }).then(apiMessage => {
                 setMessages([...messagesWithUserMessage, apiMessage]);
             });
             
