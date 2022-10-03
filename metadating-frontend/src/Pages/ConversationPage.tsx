@@ -4,6 +4,7 @@ import Container from '@mui/material/Container';
 import List from '@mui/material/List';
 import { Avatar, FormControl, IconButton, InputAdornment, InputLabel, ListItem, ListItemAvatar, OutlinedInput, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+// import { setTimeout } from 'timers/promises';
 
 const callMessageAPI = async (userMessage: string) => {
     const response = await axios.post('/api/v1/message/', {
@@ -16,8 +17,17 @@ const ConversationPage = () => {
     
     const [userMessage, setUserMessage] = useState("");
     const [messages, setMessages] = useState<string[]>([]);
+    const [disableInput, setDisableInput] = useState(false);
+    const messageRef = useRef<HTMLDivElement>(null);
     // const messageRef = useRef(null);
-    // const listMessages = messages.map(message => <p>{message}</p>)
+
+    React.useEffect(() => { // Scroll to the bottom of the page when new message appears
+        if (messageRef != null) { 
+            if (messageRef.current != null){
+                messageRef.current.scrollIntoView({behavior: "smooth"});
+            }
+        }
+    }, [messages])
 
     // This function is called when the user is typing changes
     const userMessageInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,13 +36,20 @@ const ConversationPage = () => {
     };
 
     const sendMessage = (event : React.FormEvent<HTMLFormElement>) => {
+        
+        if (disableInput) {
+            return;
+        }
+
         if (event) { // Stops the page from reloading on submit
             event.preventDefault(); 
         }
 
         if (userMessage === "") { // Prevents empty string send
-            return
+            return;
         }
+        
+        setDisableInput(true);
         
         let messagesWithUserMessage = [...messages, userMessage];
         setMessages(messagesWithUserMessage);
@@ -49,10 +66,14 @@ const ConversationPage = () => {
                 setMessages([...messagesWithUserMessage, apiMessage]);
             });
             
+            setDisableInput(false);
             setUserMessage("");
-            // if (messageRef != null) {
-            //     messageRef.current!.scrollIntoView({behavior: 'smooth'});
-            // }
+            
+            /* if (messageRef != null) { // Scroll to the bottom of the page
+                if (messageRef.current != null){
+                    messageRef.current.scrollIntoView({behavior: "auto"});
+                }
+            }*/
     };
     
     return (
@@ -113,6 +134,8 @@ const ConversationPage = () => {
                                     label="Message"
                                     value={userMessage}
                                     onChange={userMessageInputHandler}
+                                    // disabled={true}
+                                    disabled={disableInput}
                                     // placeholder="Send a message"
                                     endAdornment={
                                         <InputAdornment position="end">
@@ -123,6 +146,7 @@ const ConversationPage = () => {
                                         hidden={userMessage === ""}
                                         // disabled={userMessage === ""}
                                         edge="end"
+                                        // ref={messageRef}
                                         >
                                         <SendIcon color="primary"></SendIcon>
                                         </IconButton>
@@ -132,22 +156,11 @@ const ConversationPage = () => {
                                 </FormControl>
                             </form>
                         </div>
-                        {/* <div ref={messageRef}></div> */}
-
-                        {/* <input
-                            value={userMessage}
-                            onChange={userMessageInputHandler}
-                            placeholder="Message"
-                            className="input" 
-                            />
-
-                        <button onClick={sendMessage}>
-                            Send Message
-                        </button> */}
 
                 </Container>
                 
             </div>
+            <div ref={messageRef}></div>
         </div>
 
     )
