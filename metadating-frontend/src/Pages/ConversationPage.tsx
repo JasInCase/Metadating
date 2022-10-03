@@ -55,6 +55,7 @@ const ConversationPage = () => {
         setMessages(messagesWithUserMessage);
 
         callMessageAPI(userMessage).then((apiMessage) => {
+            // NOTE: This is probably wrong. We should look at the response status code instead.
             if (apiMessage === "") {
                 console.log("An error occurred when reaching the api");
                 return "Error reaching api";
