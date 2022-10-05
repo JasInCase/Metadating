@@ -28,6 +28,8 @@ case $1 in
     pip install python-dotenv
     pip install requests
     pip install pylint pylint-flask
+    pip install 'pymongo[srv]'
+    pip install Flask-PyMongo
     echo "Installing node, npm, yarn, and axios"
     sudo apt-get update
     sudo apt-get install nodejs
@@ -44,6 +46,8 @@ case $1 in
     pip install python-dotenv
     pip install requests
     pip install pylint pylint-flask
+    pip install 'pymongo[srv]'
+    pip install Flask-PyMongo
     echo "Installing node, npm, yarn, and axios"
     brew update
     brew install node
