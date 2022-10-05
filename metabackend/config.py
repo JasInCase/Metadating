@@ -3,6 +3,7 @@ import pathlib
 
 APPLICATION_ROOT = '/'
 
+SECRET_KEY = '883d77f41d1d18d58acfb40d'
 SESSION_COOKIE_NAME = 'login'
 
 # Config variables
