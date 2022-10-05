@@ -3,19 +3,23 @@
 # Stop on errors
 # See https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
 set -Eeuo pipefail
-set -x
+set +x
+
 # Sanity check command line options
 usage() {
   echo "Usage: $0 (wsl|mac)"
   echo "This script will install the required libraries for the React frontend and flask backend."
 }
+
 if [ $# -ne 1 ]; then
   usage
   exit 1
 fi
-# Parse argument.  $1 is the first argument
+
+# Parse argument. $1 is the first argument
 case $1 in
   "wsl")
+    set -x
     echo "Creating python virtual environment:"
     python3 -m venv env
     source env/bin/activate
@@ -31,6 +35,7 @@ case $1 in
     npm install --global yarn
     ;;
   "mac")
+    set -x
     echo "Creating python virtual environment:"
     python3 -m venv env
     source env/bin/activate
