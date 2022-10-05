@@ -1,23 +1,64 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+import {
+  Container,
+  FormControl,
+  Grid,
+  InputLabel,
+  OutlinedInput,
+  Typography,
+  Button,
+  Link,
+  styled,
+  ImageList,
+  ImageListItem,
+} from "@mui/material";
+import { useNavigate } from 'react-router-dom';
 
 export async function getMessageFromAPI() {
 
-    // const response = await fetch ('/api/v1/hello/');
-    // console.log(response);
-    // return response.json;
     const response = await axios.get('/api/v1/hello/');
-    // console.log(response);
-    return response.data.string;
 
+    return response.data.string;
 
 }
 
 export async function sendMessageToAPI(name: string, age: string, gender: string, interests: string) {
+
     let data = [name, age, gender, interests]
-    const response = await axios.post('/api/v1/recieved/', data);
+
+    const response = await axios.post('/api/v1/received', {
+      name: name,
+      age: age,
+      gender: gender,
+      interests: interests,
+    });
+    
+    console.log(response);
     return response.data.string;
-}
+
+  }
+
+const TailwindButton = styled(Button)({
+  textTransform: 'none',
+  fontSize: 16,
+  padding: '13px 50px',
+  backgroundColor: "white",
+  color: "black",
+  "&:hover": {
+    backgroundColor: "rgb(191 219 254)",
+    borderColor: "#0062cc",
+    boxShadow: "none",
+  },
+  "&:active": {
+    boxShadow: "none",
+    backgroundColor: "#0062cc",
+    borderColor: "#005cbf",
+  },
+  "&:focus": {
+    boxShadow: "0 0 0 0.2rem rgba(0,123,255,.5)",
+  },
+});
 
 const FormPage = () => {
 
@@ -26,26 +67,6 @@ const FormPage = () => {
     const [age, setAge] = useState('');
     const [gender, setGender] = useState('');
     const [interests, setInterests] = useState('');
-
-    // By default this will run when mounted and on any component update
-    React.useEffect(() => {
-
-        getMessageFromAPI().then((apiMessage) => {
-
-            if (apiMessage === "") {
-                console.log("An error occurred when reaching the api");
-                return "Error reaching api";
-            } else {
-                return apiMessage;
-            }
-
-        }).then((apiMessage) => {
-
-            setMessage(apiMessage);
-
-        });
-
-    }/*, [runIfThisVarChanges]*/)
 
     // This function is called when the input changes
     const nameInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,6 +88,27 @@ const FormPage = () => {
 
     // This function is triggered when the Submit buttion is clicked
     const submit = () => {
+
+        if (!/[0-9]/.test(age)) {
+          console.log("Its not a number!! ERROR!!");
+        }
+        if (/[0-9]/.test(age)) {
+          console.log("It is a number");
+        }
+
+        if (name == "") {
+            console.log("Need to add name");
+        }
+        if (age == "") {
+            console.log("Need to add age");
+        }
+        if (gender == "") {
+            console.log("Need to add gender");
+        }
+        if (interests == "") {
+          console.log("Need to add interests");
+        }
+
         sendMessageToAPI(name, age, gender, interests).then((apiMessage) => {
 
             if (apiMessage === "") {
@@ -81,45 +123,126 @@ const FormPage = () => {
             console.log(apiMessage);
 
         });
+
     };
 
     return (
+      // https://mui.com/material-ui/getting-started/usage/
+      // https://mui.com/material-ui/react-grid/
+      <div className="p-5">
+        {/* <h2>Form Page</h2> */}
 
-        <div>
-            <h2>Form Page</h2>
-            <div className="container">
-                <div className="wrapper">
-                    <input
-                        value={name}
-                        onChange={nameInputHandler}
-                        placeholder="Name"
-                        className="input"
-                    />
-                    <input
-                        value={age}
-                        onChange={ageInputHandler}
-                        placeholder="Age"
-                        className="input"
-                    />
-                    <input
-                        value={gender}
-                        onChange={genderInputHandler}
-                        placeholder="Gender"
-                        className="input"
-                    />
-                    <input
-                        value={interests}
-                        onChange={interestsInputHandler}
-                        placeholder="Interests"
-                        className="input"
-                    />
-                    <button onClick={submit}>Submit</button>
-                </div>
+        <ImageList sx={{ width: 150, height: 150 }} cols={1} rowHeight={100}>
+            <ImageListItem key={"img-logo"}>
+                <img
+                  src={'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/2300px-React-icon.svg.png'}
+                  alt="logo"
+                  // loading="lazy"
+                />
+            </ImageListItem>
+          </ImageList>
+
+        <Container
+          maxWidth="md"
+          fixed={true}
+          className="shadow-2xl rounded-3xl bg-blue-200"
+        >
+
+          <Typography
+            className="pt-3 pb-1"
+            variant="h3"
+            component="h3"
+            align="center"
+          >
+            {" "}
+            Input a Profile{" "}
+          </Typography>
+
+          <div className="pb-7 pt-3">
+            <div className="p-2">
+              <FormControl fullWidth={true}>
+                <InputLabel htmlFor="name"> Name </InputLabel>
+                <OutlinedInput
+                  // className="input"
+                  fullWidth
+                  id="name"
+                  label="Name"
+                  value={name}
+                  onChange={nameInputHandler}
+                  placeholder="Name"
+                />
+              </FormControl>
             </div>
-            <h2>The api message is: {message} </h2>
-        </div>
 
-    )
+            <div className="p-2">
+              <FormControl fullWidth={true}>
+                <InputLabel htmlFor="age"> Age </InputLabel>
+                <OutlinedInput
+                  // className="input"
+                  id="age"
+                  fullWidth
+                  label="Age"
+                  value={age}
+                  onChange={ageInputHandler}
+                  placeholder="Age"
+                />
+              </FormControl>
+            </div>
+
+            <div className="p-2">
+              <FormControl fullWidth={true}>
+                <InputLabel htmlFor="gender"> Gender </InputLabel>
+                <OutlinedInput
+                  // className="input"
+                  id="gender"
+                  fullWidth
+                  label="Gender"
+                  value={gender}
+                  onChange={genderInputHandler}
+                  placeholder="Gender"
+                />
+              </FormControl>
+            </div>
+
+            <div className="p-2 pb-16">
+              <FormControl fullWidth={true}>
+                <InputLabel htmlFor="interests"> Interests </InputLabel>
+                <OutlinedInput
+                  // className="input"
+                  id="interests"
+                  fullWidth
+                  label="Interests"
+                  value={interests}
+                  onChange={interestsInputHandler}
+                  placeholder="Interests"
+                />
+              </FormControl>
+            </div>
+
+            <Grid container direction="column" alignItems="center" justifyContent="center">
+
+              <div>
+                {/* <Link
+                  href="/conversation"
+                  className="align-middle justify-center"
+                  underline="none"
+                > */}
+                  <TailwindButton
+                    onClick={submit}
+                    variant="contained"
+                    className="center"
+                  >
+                    Submit
+                  </TailwindButton>
+                  
+                {/* </Link> */}
+              
+              </div>
+            </Grid>
+          </div>
+        </Container>
+      </div>
+    );
 };
 
 export default FormPage;

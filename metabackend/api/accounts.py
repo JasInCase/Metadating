@@ -22,6 +22,10 @@ import hashlib
 # def brodie():
 #     return 'ok'
 
+@metabackend.app.route('/api/v1/accounts/testing/', methods=['GET'])
+def broseph():
+    return flask.redirect(metabackend.app.config['FLASK_ROUTE'])
+
 
 @metabackend.app.route('/api/v1/accounts/', methods=['POST'])
 def accounts():

@@ -1,0 +1,7 @@
+Example Tinder conversation
+
+$name$'s profile:
+Age: $age$
+Gender: $gender$
+Interests: $interests$
+Traits: Non-apologetic, creative, inquisitive, enthusiastic, flirty

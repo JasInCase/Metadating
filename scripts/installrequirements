@@ -46,8 +46,12 @@ case $1 in
     pip install python-dotenv
     pip install requests
     pip install pylint pylint-flask
+<<<<<<< Updated upstream
     pip install 'pymongo[srv]'
     pip install Flask-PyMongo
+=======
+    pip install pymongo
+>>>>>>> Stashed changes
     echo "Installing node, npm, yarn, and axios"
     brew update
     brew install node

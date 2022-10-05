@@ -54,7 +54,7 @@ const ConversationPage = () => {
         setMessages(messagesWithUserMessage);
 
         callMessageAPI(userMessage).then(apiResponse => {
-            if (apiResponse.status == 200) {
+            if (apiResponse.status === 200) {
                 return apiResponse.data.apiMessage;
             } else {
                 return "Error reaching api";
@@ -124,7 +124,6 @@ const ConversationPage = () => {
                             <form onSubmit={sendMessage}>
 
                                 <FormControl fullWidth>
-                                    {/* <InputLabel htmlFor="component-outlined">Name</InputLabel> */}
                                     <InputLabel htmlFor="message-input">Message</InputLabel>
                                     <OutlinedInput className='input' 
                                     id="message-input"
