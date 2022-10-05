@@ -90,23 +90,28 @@ const FormPage = () => {
     const submit = () => {
 
         if (!/[0-9]/.test(age)) {
-          console.log("Its not a number!! ERROR!!");
+        //   console.log("Its not a number!! ERROR!!");
+          return;
         }
-        if (/[0-9]/.test(age)) {
-          console.log("It is a number");
-        }
+        // if (/[0-9]/.test(age)) {
+        //   console.log("It is a number");
+        // }
 
-        if (name == "") {
-            console.log("Need to add name");
+        if (name === "") {
+            // console.log("Need to add name");
+            return;
         }
-        if (age == "") {
-            console.log("Need to add age");
+        if (age === "") {
+            // console.log("Need to add age");
+            return;
         }
-        if (gender == "") {
-            console.log("Need to add gender");
+        if (gender === "") {
+            // console.log("Need to add gender");
+            return;
         }
-        if (interests == "") {
-          console.log("Need to add interests");
+        if (interests === "") {
+        //   console.log("Need to add interests");
+          return;
         }
 
         sendMessageToAPI(name, age, gender, interests).then((apiMessage) => {
@@ -121,7 +126,8 @@ const FormPage = () => {
         }).then((apiMessage) => {
 
             console.log(apiMessage);
-
+            window.location.replace("/conversation")
+            
         });
 
     };
