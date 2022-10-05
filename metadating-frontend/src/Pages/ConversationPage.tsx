@@ -7,9 +7,18 @@ import SendIcon from '@mui/icons-material/Send';
 // import { setTimeout } from 'timers/promises';
 
 const callMessageAPI = async (userMessage: string) => {
-    const response = await axios.post('/api/v1/message/', {
+    // const response = await axios.post('/api/v1/message/', {
+    //     userMessage: userMessage
+    // });
+
+    const response = await axios.post('/api/v1/getmsg', {
         userMessage: userMessage
-    });
+      }, { headers: {
+          // 'application/json' is the modern content-type for JSON, but some
+          // older servers may use 'text/json'.
+          'content-type': 'application/json'
+      }});
+
     return response;
 }
 
