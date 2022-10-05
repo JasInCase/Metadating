@@ -1,6 +1,9 @@
 """Sends requests to openai to complete text."""
 import openai
 import datetime
+import metabackend
+import flask
+from flask import request
 
 # OC DO NOT STEAL:
 openai.api_key = "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"
@@ -10,8 +13,8 @@ last_minute = None
 spent = 0
 MAX_SPENT = 15
 
-with open("profile_template.txt", 'r', encoding='utf-8') as file:
-    profile_template = file.read()
+# with open("profile_template.txt", 'r', encoding='utf-8') as file:
+#     profile_template = file.read()
 
 def complete(prompt: str) -> str:
     global last_minute
@@ -43,7 +46,15 @@ def build_profile(profile):
         profile - Dictionary with keys `name`, `age`, `gender`, and
                   `interests`.
     """
-    res = profile_template
+    # res = profile_template
+    res = """Example Tinder conversation
+
+    $name$'s profile:
+    Age: $age$
+    Gender: $gender$
+    Interests: $interests$
+    Traits: Non-apologetic, creative, inquisitive, enthusiastic, flirty
+    """
     for key in ('name', 'age', 'gender', 'interests'):
         res = res.replace(f'${key}$', profile[key])
     return res
@@ -75,7 +86,12 @@ def respond(profile, prev_messages: str):
     api_message = complete(prompt)
     return api_message
 
-if __name__ == "__main__":
+@metabackend.app.route('/api/v1/getmsg', methods=['POST'])
+def respond_to_message_frontend():
+
+    data = request.get_json()
+    string_to_append = data["userMessage"]
+
     profile = {
         'name': "Jayce",
         'age': '24',
@@ -92,7 +108,33 @@ if __name__ == "__main__":
 
     USER:
 
-    what kinda music do you like?"""
+    """ + string_to_append
 
-    print(respond(profile, prev_messages))
+    # print(respond(profile, prev_messages)
+    to_return = respond(profile, prev_messages)
+    context = {
+        'apiMessage': to_return
+    }
+    return flask.jsonify(**context)
+
+# if __name__ == "__main__":
+#     profile = {
+#         'name': "Jayce",
+#         'age': '24',
+#         'gender': "male",
+#         'interests': "Metal, sushi, astrology, space, music"
+#     }
+#     prev_messages = """USER:
+
+#     I think your city is pretty but you're even prettier ;)
+
+#     JAYCE:
+
+#     heh witty. i think im pretty too
+
+#     USER:
+
+#     what kinda music do you like?"""
+
+#     print(respond(profile, prev_messages))
     
