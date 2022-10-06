@@ -86,11 +86,56 @@ def respond(profile, prev_messages: str):
     api_message = complete(prompt)
     return api_message
 
+# @metabackend.app.route('/api/v1/getmsg', methods=['POST'])
+# def respond_to_message_frontend():
+
+#     data = request.get_json()
+#     string_to_append = data["userMessage"]
+
+#     profile = {
+#         'name': "Jayce",
+#         'age': '24',
+#         'gender': "male",
+#         'interests': "Metal, sushi, astrology, space, music"
+#     }
+#     prev_messages = """USER:
+
+#     I think your city is pretty but you're even prettier ;)
+
+#     JAYCE:
+
+#     heh witty. i think im pretty too
+
+#     USER:
+
+#     """ + string_to_append
+
+#     # print(respond(profile, prev_messages)
+#     to_return = respond(profile, prev_messages)
+#     context = {
+#         'apiMessage': to_return
+#     }
+#     return flask.jsonify(**context)
+
+
+
+
 @metabackend.app.route('/api/v1/getmsg', methods=['POST'])
 def respond_to_message_frontend():
 
     data = request.get_json()
     string_to_append = data["userMessage"]
+    array_msgs = data["msgs"]
+    
+    input_messages = ""
+    for index, msg in enumerate(array_msgs):
+        if index % 2 == 0:
+            input_messages = input_messages + "USER:\n\n"
+            input_messages = input_messages + msg + "\n\n"
+        else:
+            input_messages = input_messages + "Jayce:\n\n"
+            input_messages = input_messages + msg + "\n\n"
+
 
     profile = {
         'name': "Jayce",
@@ -111,11 +156,16 @@ def respond_to_message_frontend():
     """ + string_to_append
 
     # print(respond(profile, prev_messages)
-    to_return = respond(profile, prev_messages)
+    # to_return = respond(profile, prev_messages)
+    to_return = respond(profile, input_messages)
     context = {
         'apiMessage': to_return
     }
     return flask.jsonify(**context)
+
+
+
+
 
 # if __name__ == "__main__":
 #     profile = {

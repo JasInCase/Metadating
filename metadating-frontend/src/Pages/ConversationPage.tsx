@@ -6,13 +6,14 @@ import { Avatar, FormControl, IconButton, InputAdornment, InputLabel, ListItem, 
 import SendIcon from '@mui/icons-material/Send';
 // import { setTimeout } from 'timers/promises';
 
-const callMessageAPI = async (userMessage: string) => {
+const callMessageAPI = async (userMessage: string, messages: string[]) => {
     // const response = await axios.post('/api/v1/message/', {
     //     userMessage: userMessage
     // });
 
     const response = await axios.post('/api/v1/getmsg', {
-        userMessage: userMessage
+        userMessage: userMessage,
+        msgs: messages
       }, { headers: {
           // 'application/json' is the modern content-type for JSON, but some
           // older servers may use 'text/json'.
@@ -38,6 +39,11 @@ const ConversationPage = () => {
         }
     }, [messages])
 
+    
+    // React.useEffect(() => {
+    //     window.localStorage.setItem('messages', messages);
+    // }, [messages]);
+
     // This function is called when the user is typing changes
     const userMessageInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         const enteredUserMessage = event.target.value;
@@ -62,7 +68,7 @@ const ConversationPage = () => {
         let messagesWithUserMessage = [...messages, userMessage];
         setMessages(messagesWithUserMessage);
 
-        callMessageAPI(userMessage).then(apiResponse => {
+        callMessageAPI(userMessage, messages).then(apiResponse => {
             if (apiResponse.status === 200) {
                 return apiResponse.data.apiMessage;
             } else {
