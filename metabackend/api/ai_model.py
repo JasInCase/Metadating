@@ -11,15 +11,12 @@ completion = openai.Completion
 
 last_minute = None
 spent = 0
-MAX_SPENT = 15
-
-# with open("profile_template.txt", 'r', encoding='utf-8') as file:
-#     profile_template = file.read()
+MAX_SPENT = 60
 
 def complete(prompt: str) -> str:
     global last_minute
     global spent
-    """Sends a request to GPT-3's Davinci model to complete a text prompt."""
+    """Send a request to GPT-3's Davinci model to complete a text prompt."""
     now = datetime.datetime.now()
     now = (now.year, now.month, now.day, now.hour, now.minute)
     if now != last_minute:
@@ -39,14 +36,26 @@ def complete(prompt: str) -> str:
 
     return res['choices'][0]['text']
 
+def complete_fully(prompt: str) -> str:
+    """Send requests to GPT-3 until two newline characters are found.
+    
+    To prevent infinite loops, only up to five requests are sent.
+    """
+    completion = complete(prompt)
+    for _ in range(5):
+        if completion.count('\n\n') > 1:
+            break
+        completion += complete(prompt + completion)
+    completion = '\n\n' + completion.split('\n\n')[1]
+    return completion
+
 def build_profile(profile):
-    """Fills profile data into a template for use by GPT-3.
+    """Fill profile data into a template for use by GPT-3.
 
     Parameters:
         profile - Dictionary with keys `name`, `age`, `gender`, and
                   `interests`.
     """
-    # res = profile_template
     res = """Example Tinder conversation
 
     $name$'s profile:
@@ -60,7 +69,7 @@ def build_profile(profile):
     return res
 
 def respond(profile, prev_messages: str):
-    """Adds the user's latest text to the convo and responds with GPT-3.
+    """Add the user's latest text to the convo and responds with GPT-3.
 
     Parameters:
         profile - Dictionary with keys `name`, `age`, `gender`, and
@@ -83,7 +92,7 @@ def respond(profile, prev_messages: str):
     name = profile['name']
     prompt = build_profile(profile) + '\n\n' + prev_messages
     prompt += f'\n\n{name}:[insert]\n\nUSER:'
-    api_message = complete(prompt)
+    api_message = complete_fully(prompt)
     return api_message
 
 # @metabackend.app.route('/api/v1/getmsg', methods=['POST'])
@@ -133,7 +142,7 @@ def respond_to_message_frontend():
             input_messages = input_messages + "USER:\n\n"
             input_messages = input_messages + msg + "\n\n"
         else:
-            input_messages = input_messages + "Jayce:\n\n"
+            input_messages = input_messages + "JAYCE:\n\n"
             input_messages = input_messages + msg + "\n\n"
 
 
