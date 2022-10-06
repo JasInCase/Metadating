@@ -66,9 +66,11 @@ const ConversationPage = () => {
 
         setDisableInput(true);
         let messagesWithUserMessage = [...messages, userMessage];
+        // console.log("Messages with user Message: ")
+        // console.log(messagesWithUserMessage)
         setMessages(messagesWithUserMessage);
 
-        callMessageAPI(userMessage, messages).then(apiResponse => {
+        callMessageAPI(userMessage, messagesWithUserMessage).then(apiResponse => {
             if (apiResponse.status === 200) {
                 return apiResponse.data.apiMessage;
             } else {
@@ -107,7 +109,7 @@ const ConversationPage = () => {
                                 {index % 2 === 0 && 
 
 
-                                    <ListItem className="bg-blue-400 animate-ping-once rounded-3xl" style={{display:'flex', justifyContent:'flex-end'}}>
+                                    <ListItem key={message} className="bg-blue-400 animate-ping-once rounded-3xl" style={{display:'flex', justifyContent:'flex-end'}}>
                                         
                                         <Typography className="py-2" sx={{maxWidth: '55%', wordWrap:'break-word' }} > {message} </Typography> 
                                         <ListItemAvatar className='m-2 hover:shadow-2xl'>
@@ -120,7 +122,7 @@ const ConversationPage = () => {
                                 {index % 2 === 1 && 
 
 
-                                    <ListItem className="bg-slate-200 rounded-3xl animate-ping-once">
+                                    <ListItem key={message} className="bg-slate-200 rounded-3xl animate-ping-once">
                                         <ListItemAvatar className='m-2 hover:shadow-2xl'>
                                             <Avatar alt="user2" src="https://avatars.dicebear.com/api/female/girl12.svg"/>
                                         </ListItemAvatar>

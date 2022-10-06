@@ -140,7 +140,7 @@ def respond_to_message_frontend():
     profile = {
         'name': "Jayce",
         'age': '24',
-        'gender': "male",
+        'gender': "female",
         'interests': "Metal, sushi, astrology, space, music"
     }
     prev_messages = """USER:
