@@ -6,25 +6,8 @@ URLs include:
 """
 import flask
 import metabackend
+from metabackend.api.utils import check_login, react_site_redirect
 import hashlib
-
-
-# Somewhat overkill but cool decorator stuff for auto-auth
-# def decorator(func):
-#     def printedFunc():
-#         func()
-#         return 'bye'
-#     return printedFunc
-
-
-# @metabackend.app.route('/henlo/', methods=['GET'])
-# @decorator
-# def brodie():
-#     return 'ok'
-
-@metabackend.app.route('/api/v1/accounts/testing/', methods=['GET'])
-def broseph():
-    return flask.redirect(metabackend.app.config['FLASK_ROUTE'])
 
 
 @metabackend.app.route('/api/v1/accounts/', methods=['POST'])
@@ -37,26 +20,25 @@ def accounts():
     oper = flask.request.form["operation"]
 
     if oper == 'login':
-        return __login()
+        return do_login()
 
     elif oper == 'logout':
-        flask.session.pop('username', None)
-        return 'logged out'
+        return do_logout()
 
     elif oper == 'create':
-        pass
+        return do_create()
 
     elif oper == 'update':
-        pass
+        return do_update()
 
     elif oper == 'delete':
-        pass
+        return do_delete()
 
     else:
         flask.abort(400)
 
 
-def __login():
+def do_login():
     """User login."""
     # Error checking
     if 'username' not in flask.request.form or 'password' not in flask.request.form:
@@ -69,17 +51,37 @@ def __login():
         flask.abort(400)
 
     # Check the password
-    stored_pwd = __get_stored_user_pwd(username)
+    stored_pwd = get_stored_user_pwd(username)
 
-    if __does_pwd_match_hashed_pwd(pwd, stored_pwd):
+    if does_pwd_match_hashed_pwd(pwd, stored_pwd):
         flask.session['username'] = username
-        return flask.redirect(flask.url_for('hello'))
+        return react_site_redirect('/')
 
     else:
-        return flask.redirect(flask.url_for('message'))
+        flask.abort(403)
 
 
-def __get_stored_user_pwd(username):
+def do_logout():
+    """User logout."""
+    flask.session.pop('username', None)
+    return metabackend.api.utils.react_site_redirect('/')
+
+
+def do_create():
+    pass
+
+
+@check_login
+def do_update():
+    pass
+
+
+@check_login
+def do_delete():
+    pass
+
+
+def get_stored_user_pwd(username):
     """Get the stored password for a user."""
     # Password is just 'password'
     hashed_pwd = 'sha512$a45ffdcc71884853a2cba9e6bc55e812$c739cef1aec45c6e345c'
@@ -88,14 +90,14 @@ def __get_stored_user_pwd(username):
     return hashed_pwd
 
 
-def __does_pwd_match_hashed_pwd(pwd, hashed_pwd):
+def does_pwd_match_hashed_pwd(pwd, hashed_pwd):
     """Check a password against a hashed password."""
     algo, salt, stored_pwd_hash = hashed_pwd.split('$')
 
-    return __generate_hashed_pwd(algo, salt, pwd) == stored_pwd_hash
+    return generate_hashed_pwd(algo, salt, pwd) == stored_pwd_hash
 
 
-def __generate_hashed_pwd(algo, salt, pwd):
+def generate_hashed_pwd(algo, salt, pwd):
     """Generate a hashed password."""
     hash_obj = hashlib.new(algo)
     pwd_salted = salt + pwd
