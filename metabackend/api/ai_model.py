@@ -24,7 +24,7 @@ def complete(prompt: str) -> str:
         spent = 0
     spent += 1
     if spent > MAX_SPENT:
-        return "GPT-3 LIMIT REACHED. PLEASE WAIT."
+        return "GPT-3 LIMIT REACHED. PLEASE WAIT.\n\n"
 
     if '[insert]' in prompt:
         context, suffix = prompt.split('[insert]')
@@ -34,6 +34,7 @@ def complete(prompt: str) -> str:
         res = completion.create(engine="text-davinci-002", prompt=prompt,
             temperature = 0.9)
 
+    # print(res['choices'][0]['text'])
     return res['choices'][0]['text']
 
 def complete_fully(prompt: str) -> str:
