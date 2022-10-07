@@ -32,7 +32,11 @@ export async function sendMessageToAPI(name: string, age: string, gender: string
       age: age,
       gender: gender,
       interests: interests,
-    });
+    }, { headers: {
+        // 'application/json' is the modern content-type for JSON, but some
+        // older servers may use 'text/json'.
+        'content-type': 'application/json'
+    }});
     
     console.log(response);
     return response.data.string;
