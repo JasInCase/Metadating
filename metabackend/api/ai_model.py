@@ -6,7 +6,7 @@ import flask
 from flask import request
 
 # OC DO NOT STEAL:
-openai.api_key = "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"
+openai.api_key = "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"
 completion = openai.Completion
 
 last_minute = None
