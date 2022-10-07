@@ -89,7 +89,7 @@ def respond(profile, prev_messages: str):
     USER:...
     ---
     """
-    name = profile['name']
+    name = profile['name'].upper()
     prompt = build_profile(profile) + '\n\n' + prev_messages
     prompt += f'\n\n{name}:[insert]\n\nUSER:'
     api_message = complete_fully(prompt)
