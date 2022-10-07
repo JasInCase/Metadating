@@ -42,6 +42,7 @@ export async function sendMessageToAPI(name: string, age: string, gender: string
     return response.data.string;
 
   }
+  
 
 const TailwindButton = styled(Button)({
   textTransform: 'none',
