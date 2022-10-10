@@ -14,38 +14,42 @@ import hashlib
 def accounts():
     """Handles accounts requests."""
     # Handle the specific operation
-    if 'operation' not in flask.request.form:
+    print(flask.request.json)
+    if 'operation' not in flask.request.json:
         flask.abort(400)
 
-    oper = flask.request.form["operation"]
+    # Note I am sending info as json because
+    # of how im doing input validation
+    # So use flask.request.json instead of flask.request.form
+    # everything else is the same!
+    oper = flask.request.json["operation"]
 
     if oper == 'login':
         return do_login()
 
-    elif oper == 'logout':
+    if oper == 'logout':
         return do_logout()
 
-    elif oper == 'create':
+    if oper == 'create':
         return do_create()
 
-    elif oper == 'update':
+    if oper == 'update':
         return do_update()
 
-    elif oper == 'delete':
+    if oper == 'delete':
         return do_delete()
 
-    else:
-        flask.abort(400)
+    flask.abort(400)
 
 
 def do_login():
     """User login."""
     # Error checking
-    if 'username' not in flask.request.form or 'password' not in flask.request.form:
+    if 'username' not in flask.request.json or 'password' not in flask.request.json:
         flask.abort(400)
 
-    username = flask.request.form['username']
-    pwd = flask.request.form['password']
+    username = flask.request.json['username']
+    pwd = flask.request.json['password']
 
     if not username or not pwd:
         flask.abort(400)

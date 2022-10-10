@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { Button, FormControl, InputLabel, OutlinedInput, styled } from '@mui/material';
+import { Button, FormControl, FormHelperText, InputLabel, OutlinedInput, styled } from '@mui/material';
 
 export async function getMessageFromAPI() {
 
@@ -16,40 +14,63 @@ export async function getMessageFromAPI() {
     // console.log(response);
     return response.data.string;
 
+}
+
+export async function sendLoginToAPI(username : string, password : string) {
+
+    const response = await axios.post('/api/v1/accounts/', {
+        username: username,
+        password: password,
+        operation: "login"
+      }, { headers: {
+          'content-type': 'application/json'
+    }});
+
+    return response;
 
 }
 
-const TailwindButton = styled(Button)({
-    textTransform: 'none',
-    fontSize: 16,
-    padding: '13px 50px',
-    backgroundColor: "white",
-    color: "black",
-    "&:hover": {
-      backgroundColor: "rgb(191 219 254)",
-      borderColor: "#0062cc",
-      boxShadow: "none",
-    },
-    "&:active": {
-      boxShadow: "none",
-      backgroundColor: "#0062cc",
-      borderColor: "#005cbf",
-    },
-    "&:focus": {
-      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.5)",
-    },
-  });
+export async function sendSignupToAPI(username: string, password : string) {
+
+    const response = await axios.post('/api/v1/accounts/', {
+        username: username,
+        password: password,
+        operation: "logout"
+      }, { headers: {
+          'content-type': 'application/json'
+    }});
+
+    return response;
+
+}
+
+export function onlySpaces(str : string) {
+
+    return /^\s*$/.test(str);
+
+}
+
 
 
 const LoginPage = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [validUsername, setValidUsername] = useState(true);
+    const [validPassword, setValidPassword] = useState(true);
+    const [errorTextUsername, setErrorTextUsername] = useState("");
+    const [errorTextPassword, setErrorTextPassword] = useState("");
 
     const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
         const enteredUsername = event.target.value;
         setUsername(enteredUsername);
+        if (validUsername === false) {
+            if (event.target.value != "") {
+                setValidUsername(true);
+                setErrorTextUsername("");
+            }
+        }
 
     }
 
@@ -57,6 +78,51 @@ const LoginPage = () => {
 
         const enteredPassword = event.target.value;
         setPassword(enteredPassword);
+        if (validPassword === false) {
+            if (event.target.value != "") {
+                setValidPassword(true);
+                setErrorTextUsername("");
+            }
+        }
+
+
+    }
+
+    const submitLogIn = () => {
+
+        if (username === "" || onlySpaces(username)) {
+            setValidUsername(false);
+            setErrorTextUsername("Please input a valid username.");
+        }
+        if (password === "" || onlySpaces(password)) {
+            setValidPassword(false);
+            setErrorTextPassword("Please input a valid password.");
+        }
+        if (!validUsername || !validPassword) {
+            return;
+        }
+
+        sendLoginToAPI(username, password);
+
+
+    }
+
+    const submitSignUp = () => {
+
+        if (username === "" || onlySpaces(username)) {
+            setValidUsername(false);
+            setErrorTextUsername("Please input a valid username.");
+        }
+        if (password === "" || onlySpaces(password)) {
+            setValidPassword(false);
+            setErrorTextPassword("Please input a valid password.");
+        }
+        if (!validUsername || !validPassword) {
+            return;
+        }
+
+        sendSignupToAPI(username, password);
+
 
     }
 
@@ -67,7 +133,7 @@ const LoginPage = () => {
             <Container
                 maxWidth="md"
                 fixed={true}
-                className="shadow-2xl rounded-3xl bg-blue-200">
+                className="shadow-2xl rounded-3xl bg-purple-200">
 
 
                 <Typography
@@ -87,6 +153,7 @@ const LoginPage = () => {
                             <InputLabel htmlFor="name"> Username </InputLabel>
                             <OutlinedInput
                             // className="input"
+                            error={!validUsername}
                             fullWidth
                             id="name"
                             label="Username"
@@ -94,6 +161,10 @@ const LoginPage = () => {
                             onChange={onUsernameChange}
                             placeholder="Username"
                             />
+                            { !validUsername && <FormHelperText>
+                                {errorTextUsername}
+                            </FormHelperText>
+                            }
                         </FormControl>
 
 
@@ -105,6 +176,7 @@ const LoginPage = () => {
                             <InputLabel htmlFor="name"> Password </InputLabel>
                             <OutlinedInput
                             // className="input"
+                            error={!validPassword}
                             fullWidth
                             id="name"
                             label="Password"
@@ -112,6 +184,10 @@ const LoginPage = () => {
                             onChange={onPasswordChange}
                             placeholder="Password"
                             />
+                            { !validPassword && <FormHelperText>
+                                {errorTextPassword}
+                            </FormHelperText>
+                            }
                         </FormControl>
 
 
@@ -125,7 +201,7 @@ const LoginPage = () => {
                         <Grid item xs={2} style={{textAlign: "center"}}>
 
                             <Button
-                            // onClick={submit}
+                            onClick={submitLogIn}
                             variant="contained"
                             className="center"
                             >
@@ -137,7 +213,7 @@ const LoginPage = () => {
 
 
                             <Button
-                            // onClick={submit}
+                            onClick={submitSignUp}
                             variant="contained"
                             className="center"
                             >

@@ -38,7 +38,7 @@ export async function sendMessageToAPI(name: string, age: string, gender: string
         'content-type': 'application/json'
     }});
     
-    console.log(response);
+    // console.log(response);
     return response.data.string;
 
   }
