@@ -26,29 +26,67 @@ def complete(prompt: str) -> str:
     if spent > MAX_SPENT:
         return "GPT-3 LIMIT REACHED. PLEASE WAIT.\n\n"
 
-    if '[insert]' in prompt:
-        context, suffix = prompt.split('[insert]')
-        res = completion.create(engine="text-davinci-002", prompt=context,
-            suffix=suffix, temperature=0.9)
-    else:
-        res = completion.create(engine="text-davinci-002", prompt=prompt,
-            temperature = 0.9)
-
+    # if '[insert]' in prompt:
+    #     delimited_str = prompt.split('[insert]')
+    #     # context, suffix = prompt.split('[insert]')
+    #     context = delimited_str[0]
+    #     suffix = "\n\n"
+    #     res = completion.create(engine="text-davinci-002", prompt=context,
+    #         suffix=suffix, temperature=0.9)
+    # else:
+    stop = ["\n\nUSER:", ")"]
+    res = completion.create(engine="text-davinci-002", prompt=prompt,
+          temperature = 0.9, max_tokens=48, suffix="\n\nUSER:", n=1,
+          stop=stop)
+    # print("API Call Result:\n", res)
     # print(res['choices'][0]['text'])
     return res['choices'][0]['text']
+
+
+# def complete_fully(prompt: str) -> str:
+#     """Send requests to GPT-3 until two newline characters are found.
+    
+#     To prevent infinite loops, only up to five requests are sent.
+#     """
+#     completion = complete(prompt)
+#     print("First complete call:[", completion, "]")
+#     for i in range(5):
+#         if completion.count('\n\n') > 1:
+#             print("Done with completion.")
+#             break
+#         completion += complete(prompt + completion)
+#         print(i + 1, "th complete call:[", completion, "]")
+#     completion = '\n\n' + completion.split('\n\n')[1]
+#     print("returning completion?[", completion, "]")
+    # return completion
+
 
 def complete_fully(prompt: str) -> str:
     """Send requests to GPT-3 until two newline characters are found.
     
     To prevent infinite loops, only up to five requests are sent.
     """
-    completion = complete(prompt)
-    for _ in range(5):
-        if completion.count('\n\n') > 1:
-            break
-        completion += complete(prompt + completion)
-    completion = '\n\n' + completion.split('\n\n')[1]
-    return completion
+    # print("Prompt to API:", prompt)
+    to_return_string = ""
+    completed_string = complete(prompt).strip()
+    # for i in range(0,5):
+    #     if not completed_string.endswith('\n'):
+    #         print("Made second call to check length")
+    #         completed_string = completed_string + complete(prompt + completed_string + "[insert]")
+    #         print("Iteration", i + 1, " - Updated String:" + completed_string)
+    #         if (completed_string.count('\n\n') >= 1):
+    #             return completed_string.split('\n\n')[0]
+    # for i in range(5):
+    #     if completion.count('\n\n') > 1:
+    #         print("Done with completion.")
+    #         break
+    #     completion += complete(prompt + completion)
+    #     print(i + 1, "th complete call:[", completion, "]")
+    # completion = '\n\n' + completion.split('\n\n')[1]
+    to_return_string = completed_string
+    # print("String returned:", to_return_string)
+    return to_return_string
+
 
 def build_profile(profile):
     """Fill profile data into a template for use by GPT-3.
@@ -68,6 +106,7 @@ def build_profile(profile):
     for key in ('name', 'age', 'gender', 'interests'):
         res = res.replace(f'${key}$', profile[key])
     return res
+
 
 def respond(profile, prev_messages: str):
     """Add the user's latest text to the convo and responds with GPT-3.
@@ -92,7 +131,7 @@ def respond(profile, prev_messages: str):
     """
     name = profile['name'].upper()
     prompt = build_profile(profile) + '\n\n' + prev_messages
-    prompt += f'\n\n{name}:[insert]\n\nUSER:'
+    # prompt += f'\n\n{name}:[insert]\n\nUSER:'
     api_message = complete_fully(prompt)
     return api_message
 
@@ -137,36 +176,24 @@ def respond_to_message_frontend():
     string_to_append = data["userMessage"]
     array_msgs = data["msgs"]
     
-    input_messages = ""
-    for index, msg in enumerate(array_msgs):
-        if index % 2 == 0:
-            input_messages = input_messages + "USER:\n\n"
-            input_messages = input_messages + msg + "\n\n"
-        else:
-            input_messages = input_messages + "JAYCE:\n\n"
-            input_messages = input_messages + msg + "\n\n"
-
-
     profile = {
         'name': "Jayce",
         'age': '24',
         'gender': "female",
         'interests': "Metal, sushi, astrology, space, music"
     }
-    prev_messages = """USER:
 
-    I think your city is pretty but you're even prettier ;)
 
-    JAYCE:
+    input_messages = ""
+    for index, msg in enumerate(array_msgs):
+        if index % 2 == 0:
+            input_messages = input_messages + "USER:\n\n"
+            input_messages = input_messages + msg + "\n\n"
+        else:
+            input_messages = input_messages + profile["name"] + ":"
+            input_messages = input_messages + msg + "\n\n"
+    input_messages = input_messages + profile["name"] + ": "
 
-    heh witty. i think im pretty too
-
-    USER:
-
-    """ + string_to_append
-
-    # print(respond(profile, prev_messages)
-    # to_return = respond(profile, prev_messages)
     to_return = respond(profile, input_messages)
     context = {
         'apiMessage': to_return
