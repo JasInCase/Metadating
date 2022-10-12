@@ -34,7 +34,7 @@ def complete(prompt: str) -> str:
     #     res = completion.create(engine="text-davinci-002", prompt=context,
     #         suffix=suffix, temperature=0.9)
     # else:
-    stop = ["\n\nUSER:", ")"]
+    stop = ["\n\nUSER:"]
     res = completion.create(engine="text-davinci-002", prompt=prompt,
           temperature = 0.9, max_tokens=48, suffix="\n\nUSER:", n=1,
           stop=stop)
