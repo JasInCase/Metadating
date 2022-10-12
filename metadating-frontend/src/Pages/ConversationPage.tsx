@@ -10,10 +10,11 @@ const callMessageAPI = async (userMessage: string, messages: string[]) => {
     // const response = await axios.post('/api/v1/message/', {
     //     userMessage: userMessage
     // });
-
+    let sessionmatchid = window.sessionStorage.getItem("matchId");
     const response = await axios.post('/api/v1/getmsg', {
         userMessage: userMessage,
-        msgs: messages
+        msgs: messages, 
+        matchid: sessionmatchid
       }, { headers: {
           // 'application/json' is the modern content-type for JSON, but some
           // older servers may use 'text/json'.

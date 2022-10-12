@@ -27,7 +27,7 @@ export async function sendMessageToAPI(name: string, age: string, gender: string
 
     let data = [name, age, gender, interests]
 
-    const response = await axios.post('/api/v1/received', {
+    const response = await axios.post('/api/v1/form', {
       name: name,
       age: age,
       gender: gender,
@@ -131,7 +131,8 @@ const FormPage = () => {
         }).then((apiMessage) => {
 
             console.log(apiMessage);
-            window.location.replace("/conversation")
+            window.sessionStorage.setItem("matchId", apiMessage);
+            window.location.assign("/conversation")
             
         });
 

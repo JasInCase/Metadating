@@ -166,42 +166,20 @@ def respond(profile, prev_messages: str):
 #     }
 #     return flask.jsonify(**context)
 
-
-
-
-@metabackend.app.route('/api/v1/getmsg', methods=['POST'])
-def respond_to_message_frontend():
-
-    data = request.get_json()
-    string_to_append = data["userMessage"]
-    array_msgs = data["msgs"]
-    
-    profile = {
-        'name': "Jayce",
-        'age': '24',
-        'gender': "female",
-        'interests': "Metal, sushi, astrology, space, music"
-    }
-
-
+def ai_response(array_msgs, input_profile):
+    # string_to_append = data["userMessage"]
     input_messages = ""
     for index, msg in enumerate(array_msgs):
         if index % 2 == 0:
             input_messages = input_messages + "USER:\n\n"
             input_messages = input_messages + msg + "\n\n"
         else:
-            input_messages = input_messages + profile["name"] + ":"
+            input_messages = input_messages + input_profile["name"] + ":"
             input_messages = input_messages + msg + "\n\n"
-    input_messages = input_messages + profile["name"] + ": "
+    input_messages = input_messages + input_profile["name"] + ": "
 
-    to_return = respond(profile, input_messages)
-    context = {
-        'apiMessage': to_return
-    }
-    return flask.jsonify(**context)
-
-
-
+    to_return = respond(input_profile, input_messages)
+    return to_return
 
 
 # if __name__ == "__main__":

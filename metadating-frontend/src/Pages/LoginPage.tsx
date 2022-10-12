@@ -102,7 +102,14 @@ const LoginPage = () => {
             return;
         }
 
-        sendLoginToAPI(username, password);
+        sendLoginToAPI(username, password).then((response) => {
+
+            window.location.assign("/form")
+
+        })
+        .catch(err => {
+            console.log(err);
+        });
 
 
     }
@@ -121,7 +128,11 @@ const LoginPage = () => {
             return;
         }
 
-        sendSignupToAPI(username, password);
+        sendSignupToAPI(username, password).then((response) => {
+
+            window.location.assign("/form")
+
+        });
 
 
     }

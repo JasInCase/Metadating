@@ -6,8 +6,11 @@ URLs include:
 """
 import flask
 import metabackend
+from metabackend.api.db import add_user, find_user
+import metabackend
 from metabackend.api.utils import check_login, react_site_redirect
 import hashlib
+import uuid
 
 
 @metabackend.app.route('/api/v1/accounts/', methods=['POST'])
@@ -59,10 +62,9 @@ def do_login():
 
     if does_pwd_match_hashed_pwd(pwd, stored_pwd):
         flask.session['username'] = username
-        return react_site_redirect('/')
+        return {'redirect': '/form'}
 
-    else:
-        flask.abort(403)
+    flask.abort(403)
 
 
 def do_logout():
@@ -72,7 +74,31 @@ def do_logout():
 
 
 def do_create():
-    pass
+    """User creation."""
+    # Error checking
+    if 'username' not in flask.request.json or 'password' not in flask.request.json \
+        or 'email' not in flask.request.json:
+        flask.abort(400)
+
+    username = flask.request.json['username']
+    pwd = flask.request.json['password']
+    email = flask.request.json['email']
+
+    if not username or not pwd or not email:
+        flask.abort(400)
+
+    # Make sure the user doesn't already exist
+    if find_user(username) is not None:
+        flask.abort(409)
+
+    # Generate the password hash
+    algo = 'sha512'
+    salt = uuid.uuid4().hex
+    hashed_pwd = generate_hashed_pwd(algo, salt, pwd)
+    stored_pwd = '$'.join([algo, salt, hashed_pwd])
+
+    # Add the user to the database
+    add_user(username, stored_pwd, email)
 
 
 @check_login
