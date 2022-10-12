@@ -30,6 +30,8 @@ case $1 in
     pip install pylint pylint-flask
     pip install 'pymongo[srv]'
     pip install Flask-PyMongo
+    pip install flask_cors
+    pip install openai
     echo "Installing node, npm, yarn, and axios"
     sudo apt-get update
     sudo apt-get install nodejs
@@ -48,6 +50,8 @@ case $1 in
     pip install pylint pylint-flask
     pip install 'pymongo[srv]'
     pip install Flask-PyMongo
+    pip install flask_cors
+    pip install openai
     echo "Installing node, npm, yarn, and axios"
     brew update
     brew install node
