@@ -39,7 +39,9 @@ def complete(prompt: str) -> str:
           temperature = 0.9, max_tokens=48, suffix="\n\nUSER:", n=1,
           stop=stop)
     # print("API Call Result:\n", res)
-    # print(res['choices'][0]['text'])
+    print()
+    print(prompt)
+    print(res['choices'][0]['text'])
     return res['choices'][0]['text']
 
 
@@ -97,12 +99,11 @@ def build_profile(profile):
     """
     res = """Example Tinder conversation
 
-    $name$'s profile:
-    Age: $age$
-    Gender: $gender$
-    Interests: $interests$
-    Traits: Non-apologetic, creative, inquisitive, enthusiastic, flirty
-    """
+$name$'s profile:
+Age: $age$
+Gender: $gender$
+Interests: $interests$
+Traits: Non-apologetic, creative, inquisitive, enthusiastic, flirty"""
     for key in ('name', 'age', 'gender', 'interests'):
         res = res.replace(f'${key}$', profile[key])
     return res
@@ -168,15 +169,16 @@ def respond(profile, prev_messages: str):
 
 def ai_response(array_msgs, input_profile):
     # string_to_append = data["userMessage"]
+    name = input_profile["name"].upper()
     input_messages = ""
     for index, msg in enumerate(array_msgs):
         if index % 2 == 0:
             input_messages = input_messages + "USER:\n\n"
             input_messages = input_messages + msg + "\n\n"
         else:
-            input_messages = input_messages + input_profile["name"] + ":"
+            input_messages = input_messages + name + ":\n\n"
             input_messages = input_messages + msg + "\n\n"
-    input_messages = input_messages + input_profile["name"] + ": "
+    input_messages = input_messages + name + ": "
 
     to_return = respond(input_profile, input_messages)
     return to_return
