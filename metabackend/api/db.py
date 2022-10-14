@@ -42,5 +42,11 @@ def add_user(username, password, email):
 def find_match(match_id):
     return db.matches.find_one({'_id': ObjectId(match_id)})
 
-'''def find_user(username):
-    return db.users.find_one({'_username': username})'''
+def find_user(username):
+    return db.users.find_one({'_username': username})
+
+def update_conversation_with_profile(match_id, messages):
+    return db.matches.update_one(
+        { '_id': ObjectId(match_id) },
+        { '$set': {'messages': messages} }
+    )
