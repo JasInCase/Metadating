@@ -6,7 +6,7 @@ URLs include:
 """
 import flask
 import metabackend
-from metabackend.api.db import add_user, find_user
+from metabackend.api.db import add_user
 import metabackend
 from metabackend.api.utils import check_login, react_site_redirect
 import hashlib
