@@ -131,7 +131,7 @@ const FormPage = () => {
         }).then((apiMessage) => {
 
             console.log(apiMessage);
-            window.sessionStorage.setItem("matchId", apiMessage);
+            window.localStorage.setItem("matchId", apiMessage);
             window.location.assign("/conversation")
             
         });
