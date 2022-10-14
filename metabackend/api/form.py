@@ -16,9 +16,9 @@ def store_form_data():
     response = add_match(match)
 
     status_code = 200
-    match_id = str(response.inserted_id)
 
     if response.acknowledged == True:
+        match_id = str(response.inserted_id)
         flask.session['matchId'] = match_id
         print("Response acknowledged")
     else:
