@@ -25,25 +25,6 @@ yarn start-all
 - Runs both the frontend and backend in parallel.
 
 
-<!-- Make sure to have the following libraries installed:
-(I recommend starting a python virtual environment in the main project directory for these)
-
-- flask
-  - pip install flask
-- python-dotenv
-  - pip install python-dotenv
-- requests
-  - pip install requests
-- nodejs
-  - sudo apt-get install nodejs
-- npm
-  - sudo apt-get install npm
-- yarn
-  - npm install --global yarn
-- axios
-  - npm install axios
-- pylint-flask
-  - pip install pylint pylint-flask -->
 
 Use the script "installrequirements" to install the required libraries.
 ```
@@ -61,4 +42,4 @@ $env:FLASK_APP = "metabackend"
 flask run --host 0.0.0.0 --port 8000
 ```
 
-and React is setup to automatically proxy all unknown requests to the Flask backend.
+and React is setup to automatically proxy all unknown requests to the Flask backend (currently on port 8000, while frontend runs on port 3000)
