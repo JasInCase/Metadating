@@ -42,4 +42,12 @@ $env:FLASK_APP = "metabackend"
 flask run --host 0.0.0.0 --port 8000
 ```
 
-and React is setup to automatically proxy all unknown requests to the Flask backend (currently on port 8000, while frontend runs on port 3000)
+and React is setup to automatically proxy all unknown requests to the Flask backend 
+(currently on port 8000, while frontend runs on port 3000)
+
+To test to make sure both the frontend and backend are running, visit the following addresses:
+
+```
+localhost:8000/api/v1/hello
+localhost:3000/
+```
