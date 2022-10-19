@@ -144,7 +144,7 @@ const FormPage = () => {
       <div className="p-5">
         {/* <h2>Form Page</h2> */}
 
-        <ImageList sx={{ width: 150, height: 150 }} cols={1} rowHeight={100}>
+        {/* <ImageList sx={{ width: 150, height: 150 }} cols={1} rowHeight={100}>
             <ImageListItem key={"img-logo"}>
                 <img
                   src={'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/2300px-React-icon.svg.png'}
@@ -152,7 +152,7 @@ const FormPage = () => {
                   // loading="lazy"
                 />
             </ImageListItem>
-          </ImageList>
+          </ImageList> */}
 
         <Container
           maxWidth="md"
