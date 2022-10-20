@@ -3,7 +3,7 @@ import axios from 'axios'
 import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import { Button, FormControl, FormHelperText, InputLabel, OutlinedInput, styled } from '@mui/material';
+import { Alert, Button, CircularProgress, FormControl, FormHelperText, InputLabel, OutlinedInput, styled } from '@mui/material';
 
 export async function getMessageFromAPI() {
 
@@ -60,13 +60,15 @@ const LoginPage = () => {
     const [validPassword, setValidPassword] = useState(true);
     const [errorTextUsername, setErrorTextUsername] = useState("");
     const [errorTextPassword, setErrorTextPassword] = useState("");
+    const [invalidCredentials, setInvalidCredentials] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
         const enteredUsername = event.target.value;
         setUsername(enteredUsername);
         if (validUsername === false) {
-            if (event.target.value != "") {
+            if (event.target.value !== "") {
                 setValidUsername(true);
                 setErrorTextUsername("");
             }
@@ -79,7 +81,7 @@ const LoginPage = () => {
         const enteredPassword = event.target.value;
         setPassword(enteredPassword);
         if (validPassword === false) {
-            if (event.target.value != "") {
+            if (event.target.value !== "") {
                 setValidPassword(true);
                 setErrorTextUsername("");
             }
@@ -102,16 +104,18 @@ const LoginPage = () => {
             return;
         }
 
-        sendLoginToAPI(username, password).then((response) => {
+        setIsLoading(true);
+
+        sendLoginToAPI(username, password).then(() => {
 
             window.location.assign("/form")
 
         })
         .catch(err => {
-            console.log(err);
+            setInvalidCredentials(true);
+            setIsLoading(false);
+            console.error(err);
         });
-
-
     }
 
     const submitSignUp = () => {
@@ -128,13 +132,19 @@ const LoginPage = () => {
             return;
         }
 
-        sendSignupToAPI(username, password).then((response) => {
+        setIsLoading(true);
+        sendSignupToAPI(username, password).then(() => {
 
             window.location.assign("/form")
 
+        })
+        .catch(err => {
+            setInvalidCredentials(true);
+            setIsLoading(false);
+            console.error(err);
         });
 
-
+        setIsLoading(false);
     }
 
     return (
@@ -156,7 +166,7 @@ const LoginPage = () => {
                     Login or Sign Up
                 </Typography>
 
-                <div className="pb-7 pt-3">
+                <div className="pt-3 pb-2">
 
                     <div className="p-2">
 
@@ -170,7 +180,6 @@ const LoginPage = () => {
                             label="Username"
                             value={username}
                             onChange={onUsernameChange}
-                            placeholder="Username"
                             />
                             { !validUsername && <FormHelperText>
                                 {errorTextUsername}
@@ -190,10 +199,10 @@ const LoginPage = () => {
                             error={!validPassword}
                             fullWidth
                             id="name"
+                            type="password"
                             label="Password"
                             value={password}
                             onChange={onPasswordChange}
-                            placeholder="Password"
                             />
                             { !validPassword && <FormHelperText>
                                 {errorTextPassword}
@@ -204,9 +213,23 @@ const LoginPage = () => {
 
                     </div>
 
+                    { invalidCredentials && 
+                        <div className="p-2">
+                            <Alert severity="error" variant="filled">
+                                Provided an invalid username or password
+                            </Alert>
+                        </div>
+                    }
+
                 </div>
 
                 <div className='pb-4'>
+                    { isLoading && 
+                        <div className="pb-4" style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                            <CircularProgress/>
+                        </div>
+                    }
+                    
                     <Grid container spacing={0} direction="row" alignItems="center" justifyContent="center">
 
                         <Grid item xs={2} style={{textAlign: "center"}}>
