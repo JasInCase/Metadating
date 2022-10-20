@@ -6,7 +6,7 @@ URLs include:
 """
 import flask
 import metabackend
-from metabackend.api.db import add_user
+from metabackend.api.db import add_user, find_user
 import metabackend
 from metabackend.api.utils import check_login, react_site_redirect
 import hashlib
@@ -17,9 +17,8 @@ import uuid
 def accounts():
     """Handles accounts requests."""
     # Handle the specific operation
-    print(flask.request.json)
     if 'operation' not in flask.request.json:
-        flask.abort(400)
+        flask.abort(418)
 
     # Note I am sending info as json because
     # of how im doing input validation
@@ -55,7 +54,7 @@ def do_login():
     pwd = flask.request.json['password']
 
     if not username or not pwd:
-        flask.abort(400)
+        flask.abort(403)
 
     # Check the password
     stored_pwd = get_stored_user_pwd(username)
@@ -76,15 +75,14 @@ def do_logout():
 def do_create():
     """User creation."""
     # Error checking
-    if 'username' not in flask.request.json or 'password' not in flask.request.json \
-        or 'email' not in flask.request.json:
+    if 'username' not in flask.request.json or 'password' not in flask.request.json:
         flask.abort(400)
 
     username = flask.request.json['username']
     pwd = flask.request.json['password']
-    email = flask.request.json['email']
 
-    if not username or not pwd or not email:
+    # Error checking
+    if not username or not pwd:
         flask.abort(400)
 
     # Make sure the user doesn't already exist
@@ -98,7 +96,15 @@ def do_create():
     stored_pwd = '$'.join([algo, salt, hashed_pwd])
 
     # Add the user to the database
-    add_user(username, stored_pwd, email)
+    response = add_user(username, stored_pwd)
+    new_user_id = str(response.inserted_id)
+
+    if response.acknowledged:
+        flask.session['user_id'] = new_user_id
+    else:
+        flask.abort(502)
+
+    return {'user_id': new_user_id}
 
 
 @check_login
@@ -114,10 +120,16 @@ def do_delete():
 def get_stored_user_pwd(username):
     """Get the stored password for a user."""
     # Password is just 'password'
-    hashed_pwd = 'sha512$a45ffdcc71884853a2cba9e6bc55e812$c739cef1aec45c6e345c'
-    hashed_pwd += '8463136dc1ae2fe19963106cf748baf87c7102937aa96928aa1db7fe1d8d'
-    hashed_pwd += 'a6bd343428ff3167f4500c8a61095fb771957b4367868fb8'
-    return hashed_pwd
+    # hashed_pwd = 'sha512$a45ffdcc71884853a2cba9e6bc55e812$c739cef1aec45c6e345c'
+    # hashed_pwd += '8463136dc1ae2fe19963106cf748baf87c7102937aa96928aa1db7fe1d8d'
+    # hashed_pwd += 'a6bd343428ff3167f4500c8a61095fb771957b4367868fb8'
+
+    user_obj = find_user(username)
+
+    if user_obj is None:
+        flask.abort(403)
+
+    return user_obj['password']
 
 
 def does_pwd_match_hashed_pwd(pwd, hashed_pwd):
