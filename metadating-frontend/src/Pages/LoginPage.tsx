@@ -90,7 +90,11 @@ const LoginPage = () => {
 
     }
 
-    const submitLogIn = () => {
+    const submitLogIn = (event : any) => {
+
+        if (event) {
+            event.preventDefault(); 
+        }
 
         if (username === "" || onlySpaces(username)) {
             setValidUsername(false);
@@ -100,7 +104,16 @@ const LoginPage = () => {
             setValidPassword(false);
             setErrorTextPassword("Please input a valid password.");
         }
-        if (!validUsername || !validPassword) {
+        if (username === "") {
+            return;
+        }
+        if (password === "") {
+            return;
+        }
+        if (onlySpaces(username)) {
+            return;
+        }
+        if (onlySpaces(password)) {
             return;
         }
 
@@ -171,12 +184,12 @@ const LoginPage = () => {
                     <div className="p-2">
 
                         <FormControl fullWidth={true}>
-                            <InputLabel htmlFor="name"> Username </InputLabel>
+                            <InputLabel htmlFor="username"> Username </InputLabel>
                             <OutlinedInput
                             // className="input"
                             error={!validUsername}
                             fullWidth
-                            id="name"
+                            id="username"
                             label="Username"
                             value={username}
                             onChange={onUsernameChange}
@@ -191,25 +204,27 @@ const LoginPage = () => {
                     </div>
 
                     <div className="p-2">
+                        <form onSubmit={submitLogIn}>
 
-                        <FormControl fullWidth={true}>
-                            <InputLabel htmlFor="name"> Password </InputLabel>
-                            <OutlinedInput
-                            // className="input"
-                            error={!validPassword}
-                            fullWidth
-                            id="name"
-                            type="password"
-                            label="Password"
-                            value={password}
-                            onChange={onPasswordChange}
-                            />
-                            { !validPassword && <FormHelperText>
-                                {errorTextPassword}
-                            </FormHelperText>
-                            }
-                        </FormControl>
-
+                            <FormControl fullWidth={true}>
+                                <InputLabel htmlFor="name"> Password </InputLabel>
+                                <OutlinedInput
+                                // className="input"
+                                error={!validPassword}
+                                fullWidth
+                                id="name"
+                                type="password"
+                                label="Password"
+                                autoComplete="on"
+                                value={password}
+                                onChange={onPasswordChange}
+                                />
+                                { !validPassword && <FormHelperText>
+                                    {errorTextPassword}
+                                </FormHelperText>
+                                }
+                            </FormControl>
+                        </form>
 
                     </div>
 
