@@ -16,40 +16,37 @@ export async function getMessageFromAPI() {
 
 }
 
-export async function sendLoginToAPI(username : string, password : string) {
 
-    const response = await axios.post('/api/v1/accounts/', {
-        username: username,
-        password: password,
-        operation: "login"
-      }, { headers: {
-          'content-type': 'application/json'
-    }});
-
-    return response;
-
-}
-
-export async function sendSignupToAPI(username: string, password : string) {
-
-    const response = await axios.post('/api/v1/accounts/', {
-        username: username,
-        password: password,
-        operation: "create"
-      }, { headers: {
-          'content-type': 'application/json'
-    }});
+const sendLoginToAPI = async (username : string, password : string) => {
+    const response = await axios.post('/api/v1/accounts/',
+        {
+            username: username,
+            password: password,
+            operation: "login"
+        },
+        { headers: {
+            'content-type': 'application/json'
+        }}
+    );
 
     return response;
-
 }
 
-export function onlySpaces(str : string) {
 
-    return /^\s*$/.test(str);
+const sendSignupToAPI = async (username: string, password : string) => {
+    const response = await axios.post('/api/v1/accounts/',
+        {
+            username: username,
+            password: password,
+            operation: "create"
+        },
+        { headers: {
+            'content-type': 'application/json'
+        }}
+    );
 
+    return response;
 }
-
 
 
 const LoginPage = () => {
@@ -58,70 +55,60 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [validUsername, setValidUsername] = useState(true);
     const [validPassword, setValidPassword] = useState(true);
-    const [errorTextUsername, setErrorTextUsername] = useState("");
-    const [errorTextPassword, setErrorTextPassword] = useState("");
+    const [errorTextUsername, setErrorTextUsername] = useState('');
+    const [errorTextPassword, setErrorTextPassword] = useState('');
     const [invalidCredentials, setInvalidCredentials] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
         const enteredUsername = event.target.value;
         setUsername(enteredUsername);
-        if (validUsername === false) {
-            if (event.target.value !== "") {
-                setValidUsername(true);
-                setErrorTextUsername("");
-            }
-        }
 
+        // Validate input
+        if (!validUsername && event.target.value !== '') {
+            setValidUsername(true);
+            setErrorTextUsername('');
+        }
     }
 
     const onPasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
         const enteredPassword = event.target.value;
         setPassword(enteredPassword);
-        if (validPassword === false) {
-            if (event.target.value !== "") {
-                setValidPassword(true);
-                setErrorTextUsername("");
-            }
+
+        // Validate input
+        if (!validPassword && event.target.value !== '') {
+            setValidPassword(true);
+            setErrorTextUsername('');
         }
-
-
     }
 
     const submitLogIn = (event : any) => {
-
         if (event) {
             event.preventDefault(); 
         }
 
-        if (username === "" || onlySpaces(username)) {
+        // Check for empty fields
+        let emptyFields = false;
+        if (!username || !username.trim()) {
             setValidUsername(false);
-            setErrorTextUsername("Please input a valid username.");
+            setErrorTextUsername('Please input a valid username.');
+            emptyFields = true;
         }
-        if (password === "" || onlySpaces(password)) {
+        if (!password || !password.trim()) {
             setValidPassword(false);
-            setErrorTextPassword("Please input a valid password.");
+            setErrorTextPassword('Please input a valid password.');
+            emptyFields = true;
         }
-        if (username === "") {
-            return;
-        }
-        if (password === "") {
-            return;
-        }
-        if (onlySpaces(username)) {
-            return;
-        }
-        if (onlySpaces(password)) {
+        if (emptyFields) {
             return;
         }
 
+        // Show loading icon and check login
         setIsLoading(true);
 
         sendLoginToAPI(username, password).then(() => {
 
-            window.location.assign("/form")
+            window.location.assign('/form');
 
         })
         .catch(err => {
@@ -132,23 +119,27 @@ const LoginPage = () => {
     }
 
     const submitSignUp = () => {
-
-        if (username === "" || onlySpaces(username)) {
+        // Check for empty fields
+        let emptyFields = false;
+        if (!username || !username.trim()) {
             setValidUsername(false);
             setErrorTextUsername("Please input a valid username.");
+            emptyFields = true;
         }
-        if (password === "" || onlySpaces(password)) {
+        if (!password || !password.trim()) {
             setValidPassword(false);
             setErrorTextPassword("Please input a valid password.");
+            emptyFields = true;
         }
-        if (!validUsername || !validPassword) {
+        if (emptyFields) {
             return;
         }
 
+        // Show loading icon and sign up
         setIsLoading(true);
         sendSignupToAPI(username, password).then(() => {
 
-            window.location.assign("/form")
+            window.location.assign('/form');
 
         })
         .catch(err => {
@@ -167,7 +158,6 @@ const LoginPage = () => {
                 fixed={true}
                 className="shadow-2xl rounded-3xl bg-purple-200">
 
-
                 <Typography
                     className="pt-3 pb-1"
                     variant="h3"
@@ -180,25 +170,22 @@ const LoginPage = () => {
                 <div className="pt-3 pb-2">
 
                     <div className="p-2">
-
                         <FormControl fullWidth={true}>
                             <InputLabel htmlFor="username"> Username </InputLabel>
                             <OutlinedInput
-                            // className="input"
-                            error={!validUsername}
-                            fullWidth
-                            id="username"
-                            label="Username"
-                            value={username}
-                            onChange={onUsernameChange}
+                                error={!validUsername}
+                                fullWidth
+                                id="username"
+                                label="Username"
+                                value={username}
+                                onChange={onUsernameChange}
                             />
-                            { !validUsername && <FormHelperText>
-                                {errorTextUsername}
-                            </FormHelperText>
+                            { !validUsername &&
+                                <FormHelperText>
+                                    {errorTextUsername}
+                                </FormHelperText>
                             }
                         </FormControl>
-
-
                     </div>
 
                     <div className="p-2">
@@ -207,23 +194,23 @@ const LoginPage = () => {
                             <FormControl fullWidth={true}>
                                 <InputLabel htmlFor="name"> Password </InputLabel>
                                 <OutlinedInput
-                                // className="input"
-                                error={!validPassword}
-                                fullWidth
-                                id="name"
-                                type="password"
-                                label="Password"
-                                autoComplete="on"
-                                value={password}
-                                onChange={onPasswordChange}
+                                    error={!validPassword}
+                                    fullWidth
+                                    id="name"
+                                    type="password"
+                                    label="Password"
+                                    autoComplete="on"
+                                    value={password}
+                                    onChange={onPasswordChange}
                                 />
-                                { !validPassword && <FormHelperText>
-                                    {errorTextPassword}
-                                </FormHelperText>
+                                { !validPassword &&
+                                    <FormHelperText>
+                                        {errorTextPassword}
+                                    </FormHelperText>
                                 }
                             </FormControl>
-                        </form>
 
+                        </form>
                     </div>
 
                     { invalidCredentials && 
@@ -246,27 +233,22 @@ const LoginPage = () => {
                     <Grid container spacing={0} direction="row" alignItems="center" justifyContent="center">
 
                         <Grid item xs={2} style={{textAlign: "center"}}>
-
                             <Button
-                            onClick={submitLogIn}
-                            variant="contained"
-                            className="center"
+                                onClick={submitLogIn}
+                                variant="contained"
+                                className="center"
                             >
-                            Log In
+                                Log In
                             </Button>
-
                         </Grid>
                         <Grid item xs={2} style={{textAlign: "center"}}>
-
-
                             <Button
-                            onClick={submitSignUp}
-                            variant="contained"
-                            className="center"
+                                onClick={submitSignUp}
+                                variant="contained"
+                                className="center"
                             >
-                            Sign Up
+                                Sign Up
                             </Button>
-
                         </Grid>
 
                     </Grid>
@@ -276,7 +258,6 @@ const LoginPage = () => {
             </Container>
 
         </div>
-
     )
 };
 
