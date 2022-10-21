@@ -106,8 +106,9 @@ const LoginPage = () => {
         // Show loading icon and check login
         setIsLoading(true);
 
-        sendLoginToAPI(username, password).then(() => {
-
+        sendLoginToAPI(username, password).then((res) => {
+            // console.log(res)
+            // console.log(res.data.redirect)
             window.location.assign('/form');
 
         })

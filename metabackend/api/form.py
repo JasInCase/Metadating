@@ -11,7 +11,8 @@ def store_form_data():
     age = flask.request.json["age"]
     gender = flask.request.json["gender"]
     interests = flask.request.json["interests"]
-    
+    # TODO: Add user_id to this
+
     match = {'name': name, 'age': age, 'gender': gender, 'interests': interests}
     response = add_match(match)
 

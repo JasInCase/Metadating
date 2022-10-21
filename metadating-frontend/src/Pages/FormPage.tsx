@@ -132,7 +132,7 @@ const FormPage = () => {
 
             console.log(apiMessage);
             window.localStorage.setItem("matchId", apiMessage);
-            window.location.assign("/conversation")
+            window.location.assign("/conversation") // DOUBT: Are we even using react router then?
             
         });
 

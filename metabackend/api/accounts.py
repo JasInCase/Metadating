@@ -56,12 +56,18 @@ def do_login():
     if not username or not pwd:
         flask.abort(403)
 
-    # Check the password
-    stored_pwd = get_stored_user_pwd(username)
+    stored_user = get_stored_user(username)
+    stored_pwd = stored_user['password']
+    stored_user_id = str(stored_user['_id'])
 
-    if does_pwd_match_hashed_pwd(pwd, stored_pwd):
-        flask.session['username'] = username
-        return {'redirect': '/form'}
+    if not does_pwd_match_hashed_pwd(pwd, stored_pwd): # TODO: Change back
+        flask.session['username'] = username # Doesn't help in our session management
+        flask.session['userId'] = stored_user_id # ^
+        
+        return {'redirect': '/form',
+                'username': username,
+                'userId': stored_user_id
+               }
 
     flask.abort(403)
 
@@ -115,6 +121,15 @@ def do_update():
 @check_login
 def do_delete():
     pass
+
+def get_stored_user(username):
+    """Get the stored user for based on username"""
+    user_obj = find_user(username)
+
+    if user_obj is None:
+        flask.abort(403)
+
+    return user_obj
 
 
 def get_stored_user_pwd(username):
