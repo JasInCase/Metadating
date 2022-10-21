@@ -23,15 +23,29 @@ export async function getMessageFromAPI() {
 
 }
 
+const sendLogoutToAPI = async () => {
+    const response = await axios.post('/api/v1/accounts/',
+        {
+            operation: "logout"
+        },
+        { headers: {
+            'content-type': 'application/json'
+        }}
+    );
+
+    return response;
+}
+
 export async function sendMessageToAPI(name: string, age: string, gender: string, interests: string) {
 
     let data = [name, age, gender, interests]
-
+    let userId = window.localStorage.getItem("userId");
     const response = await axios.post('/api/v1/form', {
       name: name,
       age: age,
       gender: gender,
       interests: interests,
+      userId: userId,
     }, { headers: {
         // 'application/json' is the modern content-type for JSON, but some
         // older servers may use 'text/json'.
@@ -72,8 +86,40 @@ const FormPage = () => {
     const [age, setAge] = useState('');
     const [gender, setGender] = useState('');
     const [interests, setInterests] = useState('');
+    const [logoutMessage, setLogoutMessage] = useState('');
+
+    const [username, setUsername] = useState('');
+
+    React.useEffect(() => { // display username in top right
+        
+        let name = window.localStorage.getItem("username");
+        if (name !== null) {
+            setUsername(name);
+            setLogoutMessage("Hello " + name);
+        }
+
+    }, [username])
+
+    const logout = () => {
+
+        sendLogoutToAPI().then((response) => {
+
+            window.localStorage.removeItem("username");
+            window.localStorage.removeItem("userId");
+            window.localStorage.removeItem("matchId")
+            window.location.assign('/'); 
+
+        });
+
+    }
 
     // This function is called when the input changes
+    const hoverLogout = () => {
+        setLogoutMessage("LOGOUT");
+    };
+    const nonHoverLogout = () => {
+        setLogoutMessage("Hello " + username);
+    };
     const nameInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         const enteredName = event.target.value;
         setName(enteredName);
@@ -153,6 +199,18 @@ const FormPage = () => {
                 />
             </ImageListItem>
           </ImageList> */}
+
+        <div className='fixed top-0 right-0 p-2 pr-3 border-l-2 border-pink-400 border-b-2 hover:cursor-pointer'
+            onClick={logout}
+            onMouseEnter={hoverLogout}
+            onMouseLeave={nonHoverLogout}>
+
+          <Typography>
+            <span className='text-pink-500'>{logoutMessage}</span>
+          </Typography>
+
+        </div>
+
 
         <Container
           maxWidth="md"

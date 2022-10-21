@@ -108,7 +108,8 @@ const LoginPage = () => {
 
         sendLoginToAPI(username, password).then((res) => {
             // console.log(res)
-            // console.log(res.data.redirect)
+            window.localStorage.setItem("username", res.data.username);
+            window.localStorage.setItem("userId", res.data.userId);
             window.location.assign('/form');
 
         })
@@ -138,8 +139,10 @@ const LoginPage = () => {
 
         // Show loading icon and sign up
         setIsLoading(true);
-        sendSignupToAPI(username, password).then(() => {
+        sendSignupToAPI(username, password).then((res) => {
 
+            window.localStorage.setItem("username", res.data.username);
+            window.localStorage.setItem("userId", res.data.userId);
             window.location.assign('/form');
 
         })

@@ -60,14 +60,15 @@ def do_login():
     stored_pwd = stored_user['password']
     stored_user_id = str(stored_user['_id'])
 
-    if not does_pwd_match_hashed_pwd(pwd, stored_pwd): # TODO: Change back
+    if does_pwd_match_hashed_pwd(pwd, stored_pwd):
         flask.session['username'] = username # Doesn't help in our session management
         flask.session['userId'] = stored_user_id # ^
         
-        return {'redirect': '/form',
-                'username': username,
-                'userId': stored_user_id
-               }
+        context = { 'redirect': '/form',
+                    'username': username,
+                    'userId': stored_user_id
+                  }
+        return flask.jsonify(**context), 201
 
     flask.abort(403)
 
@@ -110,7 +111,8 @@ def do_create():
     else:
         flask.abort(503)
 
-    return {'user_id': new_user_id}, 201
+    context = {'redirect': '/form', 'username': username, 'userId': new_user_id }         
+    return flask.jsonify(**context), 201
 
 
 @check_login

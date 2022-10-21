@@ -10,16 +10,31 @@ const callMessageAPI = async (userMessage: string, messages: string[]) => {
     // const response = await axios.post('/api/v1/message/', {
     //     userMessage: userMessage
     // });
-    let sessionmatchid = window.localStorage.getItem("matchId");
+    let matchId = window.localStorage.getItem("matchId");
+    let userId = window.localStorage.getItem("userId");
     const response = await axios.post('/api/v1/getmsg', {
         userMessage: userMessage,
         msgs: messages, 
-        matchid: sessionmatchid
+        matchId: matchId,
+        userId: userId
       }, { headers: {
           // 'application/json' is the modern content-type for JSON, but some
           // older servers may use 'text/json'.
           'content-type': 'application/json'
       }});
+
+    return response;
+}
+
+const sendLogoutToAPI = async () => {
+    const response = await axios.post('/api/v1/accounts/',
+        {
+            operation: "logout"
+        },
+        { headers: {
+            'content-type': 'application/json'
+        }}
+    );
 
     return response;
 }
@@ -31,6 +46,31 @@ const ConversationPage = () => {
     const [disableInput, setDisableInput] = useState(false);
     const messageRef = useRef<HTMLDivElement>(null);
     // const messageRef = useRef(null);
+    const [logoutMessage, setLogoutMessage] = useState('');
+    const [username, setUsername] = useState('');
+
+    React.useEffect(() => { // display username in top right
+        
+        let name = window.localStorage.getItem("username");
+        if (name !== null) {
+            setUsername(name);
+            setLogoutMessage("Hello " + name);
+        }
+
+    }, [username])
+
+    const logout = () => {
+
+        sendLogoutToAPI().then((response) => {
+
+            window.localStorage.removeItem("username");
+            window.localStorage.removeItem("userId");
+            window.localStorage.removeItem("matchId")
+            window.location.assign('/'); 
+
+        });
+
+    }
 
     React.useEffect(() => { // Scroll to the bottom of the page when new message appears
         if (messageRef != null) { 
@@ -46,6 +86,12 @@ const ConversationPage = () => {
     // }, [messages]);
 
     // This function is called when the user is typing changes
+    const hoverLogout = () => {
+        setLogoutMessage("LOGOUT");
+    };
+    const nonHoverLogout = () => {
+        setLogoutMessage("Hello " + username);
+    };
     const userMessageInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         const enteredUserMessage = event.target.value;
         setUserMessage(enteredUserMessage);
@@ -96,6 +142,19 @@ const ConversationPage = () => {
 
         <div>
             <div className='p-5'>
+
+
+
+                <div className='fixed top-0 right-0 p-2 pr-3 border-l-2 border-pink-400 border-b-2 hover:cursor-pointer'
+                    onClick={logout}
+                    onMouseEnter={hoverLogout}
+                    onMouseLeave={nonHoverLogout}>
+
+                    <Typography>
+                        <span className='text-pink-500'>{logoutMessage}</span>
+                    </Typography>
+
+                </div>
 
                 <Container maxWidth="md" fixed={true} className="shadow-2xl rounded-3xl bg-pink-200">
 

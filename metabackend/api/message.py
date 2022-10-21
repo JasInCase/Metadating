@@ -12,7 +12,8 @@ def respond_to_message_frontend():
     data = request.get_json()
     user_message = data["userMessage"]
     # messages = data["msgs"]
-    match_id = data["matchid"]
+    match_id = data["matchId"]
+    user_id = data["userId"]
     match = find_match(match_id)
     
     # TODO: Exception handling if match id is not found
