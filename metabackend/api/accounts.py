@@ -102,9 +102,9 @@ def do_create():
     if response.acknowledged:
         flask.session['user_id'] = new_user_id
     else:
-        flask.abort(502)
+        flask.abort(503)
 
-    return {'user_id': new_user_id}
+    return {'user_id': new_user_id}, 201
 
 
 @check_login

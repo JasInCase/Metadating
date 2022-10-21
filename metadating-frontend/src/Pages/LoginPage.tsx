@@ -35,7 +35,7 @@ export async function sendSignupToAPI(username: string, password : string) {
     const response = await axios.post('/api/v1/accounts/', {
         username: username,
         password: password,
-        operation: "logout"
+        operation: "create"
       }, { headers: {
           'content-type': 'application/json'
     }});
@@ -156,8 +156,6 @@ const LoginPage = () => {
             setIsLoading(false);
             console.error(err);
         });
-
-        setIsLoading(false);
     }
 
     return (
