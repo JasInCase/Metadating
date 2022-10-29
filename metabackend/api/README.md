@@ -10,7 +10,7 @@ fine-tune will be added here soon.
 `finetune.py` can be used as follows:
 
 ```
-usage: finetune.py [-h] --input_file INPUT_FILE [--output_file OUTPUT_FILE] [-n N] --select {first,random,r_uniq}
+usage: finetune.py [-h] --input_file INPUT_FILE [--output_file OUTPUT_FILE] [-n N] [--max_tokens MAX_TOKENS] [--quiet] --select {first,random,r_uniq,greed}
 
 Prepare data for fine-tuning a GPT-3 model.
 
@@ -21,8 +21,11 @@ optional arguments:
   --output_file OUTPUT_FILE, -o OUTPUT_FILE
                         .jsonl file to write to. If not provided, defaults to `train.jsonl` in same dir as input_file.
   -n N                  Maximum number of messages to present to GPT-3 as examples. Integer value, 0 < n < 20.
-  --select {first,random,r_uniq}, -s {first,random,r_uniq}
-                        Selection method | first, First N messages. | random, N random messages. | r_uniq, N random unique messages.
+  --max_tokens MAX_TOKENS, -t MAX_TOKENS
+                        Maximum number of tokens allowed in a single message.
+  --quiet, -q           Don't log info or show progress bars.
+  --select {first,random,r_uniq,greed}, -s {first,random,r_uniq,greed}
+                        Selection method | first, First N messages. | random, N random messages. | r_uniq, N random unique messages. | greed, Greedily maximizes unique tokens.
 ```
 
 The "selection method" dictates which messages should be taken from each 
@@ -32,3 +35,4 @@ available:
 * `first` selects the first N messages recorded.
 * `random` selects N random messages.
 * `r_uniq` removes any redundant messages and selects N from those.
+* `greed` takes the message with the most unique tokens, removes those tokens from the other messages, then repeats.
