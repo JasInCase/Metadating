@@ -32,8 +32,11 @@ parser.add_argument('--quiet', '-q', action="store_true",
 SELECT = {}
 
 
-def select_func(name, desc):
+def select_func(name):
+    """Save the decorated function as an option for message selection."""
     def dec(func):
+        desc = func.__doc__
+
         def func_wrap(msgs, count):
             if len(msgs) < count:
                 return msgs
@@ -44,32 +47,37 @@ def select_func(name, desc):
 
 
 def selection_help():
+    """Create a help string that displays all of the selection options."""
     res = "Selection method"
     for name, (_, desc) in SELECT.items():
         res += f" | {name}, {desc}"
     return res
 
 
-@select_func('first', "First N messages.")
+@select_func('first')
 def first_n(msgs, count):
+    """Take the first N messages."""
     return msgs[:count]
 
 
-@select_func('random', "N random messages.")
+@select_func('random')
 def random_n(msgs, count):
+    """Choose N random messages."""
     if count > len(msgs):
         return msgs
     return random.sample(msgs, count)
 
 
-@select_func('r_uniq', "N random unique messages.")
+@select_func('r_uniq')
 def random_u(msgs, count):
+    """Choose N random unique messages."""
     msgs = list(set(msgs))
     return random_n(msgs, count)
 
 
-@select_func('greed', "Greedily maximizes unique tokens.")
+@select_func('greed')
 def max_unique_tok(msgs, count):
+    """Greedily maximize unique tokens."""
     res = []
     sets = [set(tokenizer(m)['input_ids']) for m in msgs]
     for _ in range(count):
@@ -88,7 +96,7 @@ def build_line(user, select, count):
     Parameters:
         user - Dict type with parameters "name", "age", "messages", etc.
         select - Function for picking n messages from the list.
-        n - Number of messages to present to GPT-3.
+        count - Number of messages to present to GPT-3.
     """
     messages = select(user['messages'], count)
     res = '{"prompt": "' + build_profile(user, False) + \
@@ -127,6 +135,7 @@ def validate_args(arg):
 
 
 def main(args):
+    """Prepare data for fine-tuning a GPT-3 model."""
     args = validate_args(args)
 
     with open(args.input_file, 'r', encoding='utf-8') as file:
