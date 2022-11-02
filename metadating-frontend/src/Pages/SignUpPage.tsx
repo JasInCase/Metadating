@@ -9,6 +9,7 @@ export async function getMessageFromAPI() {
     const response = await axios.get('/api/v1/hello/');
 
     return response.data.string;
+
 }
 
 
@@ -29,7 +30,26 @@ const sendLoginToAPI = async (username: string, password: string) => {
     return response;
 }
 
-const LoginPage = () => {
+
+const sendSignupToAPI = async (username: string, password: string) => {
+    const response = await axios.post('/api/v1/accounts/',
+        {
+            username: username,
+            password: password,
+            operation: "create"
+        },
+        {
+            headers: {
+                'content-type': 'application/json'
+            }
+        }
+    );
+
+    return response;
+}
+
+
+const SignUpPage = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -100,8 +120,41 @@ const LoginPage = () => {
             });
     }
 
-    const navigateToSignUpPage = () => {
-        window.location.assign('/signup');
+    const submitSignUp = () => {
+        // Check for empty fields
+        let emptyFields = false;
+        if (!username || !username.trim()) {
+            setValidUsername(false);
+            setErrorTextUsername("Please input a valid username.");
+            emptyFields = true;
+        }
+        if (!password || !password.trim()) {
+            setValidPassword(false);
+            setErrorTextPassword("Please input a valid password.");
+            emptyFields = true;
+        }
+        if (emptyFields) {
+            return;
+        }
+
+        // Show loading icon and sign up
+        setIsLoading(true);
+        sendSignupToAPI(username, password).then((res) => {
+
+            window.localStorage.setItem("username", res.data.username);
+            window.localStorage.setItem("userId", res.data.userId);
+            window.location.assign('/form');
+
+        })
+            .catch(err => {
+                setInvalidCredentials(true);
+                setIsLoading(false);
+                console.error(err);
+            });
+    }
+
+    const navigateToLoginPage = (event: any) => {
+        window.location.assign('/');
     }
 
     return (
@@ -119,7 +172,7 @@ const LoginPage = () => {
                     component="h3"
                     align="center"
                 >
-                    Welcome to Metadating!!
+                    Sign Up
                 </Typography>
 
                 <div className="pt-3 pb-2">
@@ -189,19 +242,19 @@ const LoginPage = () => {
 
                         <Grid item xs={2} style={{ textAlign: "center" }}>
                             <Button
-                                onClick={submitLogIn}
+                                onClick={submitSignUp}
                                 variant="contained"
                                 className="center"
                             >
-                                Log In
+                                Sign Up
                             </Button>
                         </Grid>
                         <Grid item xs={2} style={{ textAlign: "center" }}>
                             <Button
-                                onClick={navigateToSignUpPage}
+                                onClick={navigateToLoginPage}
                                 className="center"
                             >
-                                Do not have an account? Sign Up
+                                Already have an account? Login
                             </Button>
                         </Grid>
 
@@ -215,4 +268,4 @@ const LoginPage = () => {
     )
 };
 
-export default LoginPage;
+export default SignUpPage;
