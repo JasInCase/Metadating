@@ -52,7 +52,7 @@ const UserBadge = () => {
     };
 
 	return (
-		<div className='fixed top-0 right-0 p-2 pr-3 border-l-2 border-pink-400 border-b-2 hover:cursor-pointer'
+		<div className='fixed top-0 right-0 p-2 pr-3 border-l-2 border-pink-400 border-b-2 hover:cursor-pointer userDisplay'
 			onClick={logout}
 			onMouseEnter={hoverLogout}
 			onMouseLeave={nonHoverLogout}>

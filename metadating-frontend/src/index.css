@@ -1,3 +1,43 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+
+    .user-icon-container {
+
+        @apply fixed top-0 right-0 w-14 m-0 flex 
+        flex-col;
+
+    }
+
+    .user-icon {
+
+        @apply relative flex 
+        items-center justify-center 
+        h-12 w-12 mt-2 mb-2 mx-auto bg-pink-300
+        hover:bg-pink-300 rounded-3xl hover:rounded-xl
+        transition-all duration-100 ease-linear;
+
+    }
+
+    .user-tooltip {
+
+        @apply absolute w-auto p-2 m-2 min-w-max
+        right-14 rounded-md shadow-md text-black
+        bg-pink-200 text-sm font-bold transition-all
+        duration-300 scale-0 origin-right delay-300;
+        /* height = 8 */
+
+    }
+
+    .logout-button {
+
+        @apply absolute w-auto p-2 m-2 min-w-max
+        right-14 top-12 rounded-md shadow-md text-black
+        bg-red-400 text-sm font-bold transition-all
+        duration-300 scale-0 origin-right delay-300;
+
+    }
+
+}

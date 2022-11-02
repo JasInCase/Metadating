@@ -7,6 +7,7 @@ import {
 	Link,
 } from "@mui/material";
 import UserBadge from '../CommonComponents/UserBadge';
+import UserBadgeUpdated from '../CommonComponents/UserBadgeUpdated';
 
 
 type ProfileData = {
@@ -74,7 +75,7 @@ const Profile = (props: ProfileData) => {
 const HomePage = () => {
 	return (
 		<>
-			<UserBadge />
+			<UserBadgeUpdated />
 			<Grid container spacing={4} className="p-8 pt-25">
 				{getData().map((profile) => {
 					return (
