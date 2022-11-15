@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
 import UserBadge from '../CommonComponents/UserBadge';
+import UserBadgeUpdated from '../CommonComponents/UserBadgeUpdated';
 
 export async function getMessageFromAPI() {
 
@@ -156,7 +157,7 @@ const FormPage = () => {
             </ImageListItem>
           </ImageList> */}
 
-        <UserBadge />
+        <UserBadgeUpdated />
 
         <Container
           maxWidth="md"
