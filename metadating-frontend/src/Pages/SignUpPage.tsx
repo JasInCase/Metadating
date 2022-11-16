@@ -154,118 +154,134 @@ const SignUpPage = () => {
     }
 
     const navigateToLoginPage = (event: any) => {
-        window.location.assign('/');
+        window.location.assign('/login');
     }
 
     return (
+      <div className="p-5">
+        <Container
+          maxWidth="md"
+          fixed={true}
+          className="shadow-2xl rounded-3xl bg-purple-200"
+        >
+          <Typography
+            className="pt-3 pb-1"
+            variant="h3"
+            component="h3"
+            align="center"
+          >
+            Sign Up
+          </Typography>
 
-        <div className='p-5'>
+          <div className="pt-3 pb-2">
+            <div className="p-2">
+              <FormControl fullWidth={true}>
+                <InputLabel htmlFor="username"> Name </InputLabel>
+                <OutlinedInput fullWidth id="username" label="Username" />
+              </FormControl>
+            </div>
 
-            <Container
-                maxWidth="md"
-                fixed={true}
-                className="shadow-2xl rounded-3xl bg-purple-200">
+            <div className="p-2">
+              <FormControl fullWidth={true}>
+                <InputLabel htmlFor="username"> Email </InputLabel>
+                <OutlinedInput fullWidth id="username" label="Username" />
+              </FormControl>
+            </div>
 
-                <Typography
-                    className="pt-3 pb-1"
-                    variant="h3"
-                    component="h3"
-                    align="center"
+            <div className="p-2">
+              <FormControl fullWidth={true}>
+                <InputLabel htmlFor="username"> Username </InputLabel>
+                <OutlinedInput
+                  error={!validUsername}
+                  fullWidth
+                  id="username"
+                  label="Username"
+                  value={username}
+                  onChange={onUsernameChange}
+                />
+                {!validUsername && (
+                  <FormHelperText>{errorTextUsername}</FormHelperText>
+                )}
+              </FormControl>
+            </div>
+
+            <div className="p-2">
+              <form onSubmit={submitLogIn}>
+                <FormControl fullWidth={true}>
+                  <InputLabel htmlFor="name"> Password </InputLabel>
+                  <OutlinedInput
+                    error={!validPassword}
+                    fullWidth
+                    id="name"
+                    type="password"
+                    label="Password"
+                    autoComplete="on"
+                    value={password}
+                    onChange={onPasswordChange}
+                  />
+                  {!validPassword && (
+                    <FormHelperText>{errorTextPassword}</FormHelperText>
+                  )}
+                </FormControl>
+              </form>
+            </div>
+
+            <div className="p-2">
+              <FormControl fullWidth={true}>
+                <InputLabel htmlFor="username"> Confirm Password </InputLabel>
+                <OutlinedInput fullWidth id="username" label="Username" />
+              </FormControl>
+            </div>
+
+            {invalidCredentials && (
+              <div className="p-2">
+                <Alert severity="error" variant="filled">
+                  Provided an invalid username or password
+                </Alert>
+              </div>
+            )}
+          </div>
+
+          <div className="pb-4">
+            {isLoading && (
+              <div
+                className="pb-4"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <CircularProgress />
+              </div>
+            )}
+
+            <Grid
+              container
+              spacing={0}
+              direction="column"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Grid item xs={2} style={{ textAlign: "center" }}>
+                <Button
+                  onClick={submitSignUp}
+                  variant="contained"
+                  className="center"
                 >
-                    Sign Up
-                </Typography>
-
-                <div className="pt-3 pb-2">
-
-                    <div className="p-2">
-                        <FormControl fullWidth={true}>
-                            <InputLabel htmlFor="username"> Username </InputLabel>
-                            <OutlinedInput
-                                error={!validUsername}
-                                fullWidth
-                                id="username"
-                                label="Username"
-                                value={username}
-                                onChange={onUsernameChange}
-                            />
-                            {!validUsername &&
-                                <FormHelperText>
-                                    {errorTextUsername}
-                                </FormHelperText>
-                            }
-                        </FormControl>
-                    </div>
-
-                    <div className="p-2">
-                        <form onSubmit={submitLogIn}>
-
-                            <FormControl fullWidth={true}>
-                                <InputLabel htmlFor="name"> Password </InputLabel>
-                                <OutlinedInput
-                                    error={!validPassword}
-                                    fullWidth
-                                    id="name"
-                                    type="password"
-                                    label="Password"
-                                    autoComplete="on"
-                                    value={password}
-                                    onChange={onPasswordChange}
-                                />
-                                {!validPassword &&
-                                    <FormHelperText>
-                                        {errorTextPassword}
-                                    </FormHelperText>
-                                }
-                            </FormControl>
-
-                        </form>
-                    </div>
-
-                    {invalidCredentials &&
-                        <div className="p-2">
-                            <Alert severity="error" variant="filled">
-                                Provided an invalid username or password
-                            </Alert>
-                        </div>
-                    }
-
-                </div>
-
-                <div className='pb-4'>
-                    {isLoading &&
-                        <div className="pb-4" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <CircularProgress />
-                        </div>
-                    }
-
-                    <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
-
-                        <Grid item xs={2} style={{ textAlign: "center" }}>
-                            <Button
-                                onClick={submitSignUp}
-                                variant="contained"
-                                className="center"
-                            >
-                                Sign Up
-                            </Button>
-                        </Grid>
-                        <Grid item xs={2} style={{ textAlign: "center" }}>
-                            <Button
-                                onClick={navigateToLoginPage}
-                                className="center"
-                            >
-                                Already have an account? Login
-                            </Button>
-                        </Grid>
-
-                    </Grid>
-
-                </div>
-
-            </Container>
-
-        </div>
-    )
+                  Sign Up
+                </Button>
+              </Grid>
+              <Grid item xs={2} style={{ textAlign: "center" }}>
+                <Button onClick={navigateToLoginPage} className="center">
+                  Already have an account? Login
+                </Button>
+              </Grid>
+            </Grid>
+          </div>
+        </Container>
+      </div>
+    );
 };
 
 export default SignUpPage;
