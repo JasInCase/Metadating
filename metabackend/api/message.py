@@ -5,6 +5,7 @@ import json
 from flask import request
 from metabackend.api.ai_model import ai_response 
 from metabackend.api.db import find_match, update_conversation_with_profile, find_real_conversation, update_real_conversation
+import time
 
 @metabackend.app.route('/api/v1/real-conversation', methods=['GET'])
 def get_real_conversation():
@@ -18,12 +19,19 @@ def get_real_conversation():
     }
     return flask.jsonify(**context)
 
-@metabackend.app.route('/api/v1/real-conversation/message', methods=['POST'])
-def add_message_to_real_conversation():
+
+@metabackend.app.route('/api/v1/real-conversation/<real_conversation_id>/message/', methods=['POST'])
+def add_message_to_real_conversation(real_conversation_id):
     data = request.get_json()
+    user_id = flask.session['username']
+    print('session',user_id)
+    context = {
+        'success': True
+    }
+    return flask.jsonify(**context)
+
     match_id = data["matchId"]
     user_id = data["userId"]
-    real_conversation_id = data["realConversationId"]
     message = data["message"]
     is_user = data["isUser"]
 
@@ -37,7 +45,19 @@ def add_message_to_real_conversation():
     }
     return flask.jsonify(**context)
 
+
 # TODO: Test all routes and add practice conversation routes
+@metabackend.app.route('/api/v1/practice-conversation/<practice_conversation_id>/message/', methods=['POST'])
+def add_message_to_practice_conversation(practice_conversation_id):
+    data = request.get_json()
+    user_id = flask.session['username']
+    print('session',user_id)
+    context = {
+        'AI_message': 'hello there'
+    }
+    time.sleep(2)
+    return flask.jsonify(**context)
+
 
 @metabackend.app.route('/api/v1/getmsg', methods=['POST'])
 def respond_to_message_frontend():

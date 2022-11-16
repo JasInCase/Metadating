@@ -107,6 +107,7 @@ def do_create():
     new_user_id = str(response.inserted_id)
 
     if response.acknowledged:
+        flask.session['username'] = username
         flask.session['user_id'] = new_user_id
     else:
         flask.abort(503)

@@ -1,14 +1,15 @@
 import React from 'react';
 import { Routes, Route, Router, Link, BrowserRouter } from "react-router-dom";
-import ConversationPage from './Pages/ConversationPage';
-import RealConversationPage from './Pages/RealConversation';
-import FormPage from './Pages/FormPage';
-import HomePage from './Pages/HomePage';
 import { Home } from '@mui/icons-material';
 import { Switch } from '@mui/material';
-import LoginPage from './Pages/LoginPage';
-import SignUpPage from './Pages/SignUpPage';
+import ConversationPage from './Pages/ConversationPage';
+import FormPage from './Pages/FormPage';
+import HomePage from './Pages/HomePage';
 import LaunchPage from "./Pages/LaunchPage";
+import LoginPage from './Pages/LoginPage';
+import PracticeConversationPage from './Pages/PracticeConversation';
+import RealConversationPage from './Pages/RealConversation';
+import SignUpPage from './Pages/SignUpPage';
 // import './index.css'
 
 function App() {
@@ -30,6 +31,10 @@ function App() {
         <Route
           path="/real-conversation/:id"
           element={<RealConversationPage />}
+        ></Route>
+        <Route
+          path="/practice-conversation/:id"
+          element={<PracticeConversationPage />}
         ></Route>
       </Routes>
     </BrowserRouter>
