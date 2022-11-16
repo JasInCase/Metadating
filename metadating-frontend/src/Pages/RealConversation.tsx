@@ -27,6 +27,20 @@ const sendMessage = async (conversationId: string, message: string, isUser: bool
 }
 
 const getExistingMessages = async (id: string) => {
+
+    const response = await axios.get(`api/v1/real-conversation/${id}`,
+        {
+            headers: {
+                'content-type': 'application/json'
+            }
+        }
+    );
+
+    // Something like this when the backend is rdy
+    // toReturn = response.data.messages;
+    // return toReturn;
+
+    
     return [
         {
             message: "hello there",
@@ -57,6 +71,7 @@ const RealConversationPage = () => {
     const [disableInput, setDisableInput] = useState(false);
     const messageRef = useRef<HTMLDivElement>(null);
 
+    // Get existing messages
     React.useEffect(() => {
 
         if (id) {

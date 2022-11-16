@@ -47,22 +47,26 @@ const LaunchPage = () => {
               justifyContent="center"
             >
               <Grid>
-                <Button
-                  onClick={navigateToLoginPage}
-                  variant="contained"
-                  className="center"
-                >
-                  Login
-                </Button>
+                  <div className='p-2'>
+                    <Button
+                    onClick={navigateToLoginPage}
+                    variant="contained"
+                    className="center"
+                    >
+                    Login
+                    </Button>
+                  </div>
               </Grid>
               <Grid>
-                <Button
-                  onClick={navigateToSignUpPage}
-                  variant="contained"
-                  className="center"
-                >
-                  Sign Up
-                </Button>
+                <div className='p-2'>
+                    <Button
+                    onClick={navigateToSignUpPage}
+                    variant="contained"
+                    className="center"
+                    >
+                    Sign Up
+                    </Button>
+                </div>
               </Grid>
             </Grid>
           </Grid>

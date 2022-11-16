@@ -65,13 +65,28 @@ def update_conversation_with_profile(match_id, messages):
 def find_matches(user_id):
     return db.matches.find({'user_id': ObjectId(user_id)})
 
+def find_practice_conversation(conversation_id): 
+    return db.practice_conversations.find_one(
+        {'_id': ObjectId(conversation_id)}
+    )
+
 def find_practice_conversations(user_id, match_id): 
     return db.practice_conversations.find(
         {'user_id': ObjectId(user_id)},
         {'match_id': ObjectId(match_id)}
     )
 
-def find_real_conversation(user_id, match_id): 
+def update_practice_conversation(conversation_id, messages):
+    return db.practice_conversations.update_one(
+        {'_id': ObjectId(real_conversation_id)},
+        {'$set': {'messages': messages}}
+    )
+
+def find_real_conversation(conversation_id, user_id, match_id): 
+    if conversation_id:
+        return db.real_conversations.find_one(
+            {'_id': ObjectId(conversation_id)}
+        )
     return db.real_conversations.find_one(
         {'user_id': ObjectId(user_id)},
         {'match_id': ObjectId(match_id)}
