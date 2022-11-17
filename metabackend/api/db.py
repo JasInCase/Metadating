@@ -25,12 +25,12 @@ def get_db():
 db = LocalProxy(get_db)
 
 
-def add_match(match):
+def insert_match(match):
     """Add a match to the matches collection."""
     return db.matches.insert_one(match)
 
 
-def add_user(username, password):
+def insert_user(username, password):
     """Add a user to the users collection."""
     user_obj = {
         'username': username,
@@ -78,8 +78,15 @@ def find_practice_conversations(user_id, match_id):
 
 def update_practice_conversation(conversation_id, messages):
     return db.practice_conversations.update_one(
-        {'_id': ObjectId(real_conversation_id)},
+        {'_id': ObjectId(conversation_id)},
         {'$set': {'messages': messages}}
+    )
+
+def insert_practice_conversation(match_id, user_id, messages):
+    return db.real_conversations.insert_one(
+        {'match_id': ObjectId(match_id)},
+        {'user_id': ObjectId(user_id)},
+        {'messages': messages}
     )
 
 def find_real_conversation(conversation_id, user_id, match_id): 
@@ -96,4 +103,11 @@ def update_real_conversation(real_conversation_id, messages):
     return db.real_conversations.update_one(
         {'_id': ObjectId(real_conversation_id)},
         {'$set': {'messages': messages}}
+    )
+
+def insert_real_conversation(match_id, user_id):
+    return db.real_conversations.insert_one(
+        {'match_id': ObjectId(match_id)},
+        {'user_id': ObjectId(user_id)},
+        {'messages': []}
     )

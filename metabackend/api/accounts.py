@@ -6,7 +6,7 @@ URLs include:
 """
 import flask
 import metabackend
-from metabackend.api.db import add_user, find_user
+from metabackend.api.db import insert_user, find_user
 import metabackend
 from metabackend.api.utils import check_login, react_site_redirect
 import hashlib
@@ -103,7 +103,7 @@ def do_create():
     stored_pwd = '$'.join([algo, salt, hashed_pwd])
 
     # Add the user to the database
-    response = add_user(username, stored_pwd)
+    response = insert_user(username, stored_pwd)
     new_user_id = str(response.inserted_id)
 
     if response.acknowledged:

@@ -8,12 +8,15 @@ import {
 } from "@mui/material";
 import UserBadge from '../CommonComponents/UserBadge';
 import UserBadgeUpdated from '../CommonComponents/UserBadgeUpdated';
+import internal from 'stream';
+import axios from 'axios';
 
 
 type ProfileData = {
 	name: string,
 	real_convo_id: string,
-	practice_convo_ids: string[]
+	practice_convo_ids: string[],
+    profile_id: string // This needs to be updated to the match ID we get from the original get request
 }
 
 
@@ -36,8 +39,38 @@ const getData = () => {
 	return res;
 }
 
+export async function sendMessageToAPI(profileId: string) {
+
+    let userId = window.localStorage.getItem("userId");
+    if (!userId) {
+        userId = "";
+    }
+
+    const response = await axios.post('/api/v1/practice-conversation', {
+        "profile_id": profileId, // Needs to be matchId
+        "user_id": userId
+    }, { headers: {
+        // 'application/json' is the modern content-type for JSON, but some
+        // older servers may use 'text/json'.
+        'content-type': 'application/json'
+    }});
+    
+    // console.log(response);
+    return response.data.practiceConversationId;
+
+}
 
 const Profile = (props: ProfileData) => {
+
+    const addNewPracticeConvo = (profileId: string) => {
+
+        sendMessageToAPI(profileId).then((practice_convo_id) => {
+
+            window.location.assign(`/practice-conversation/${practice_convo_id}`);
+
+        })
+
+    }
 
 	return (
 		<Grid item xs={12} sm={6} md={4}>
@@ -65,6 +98,12 @@ const Profile = (props: ProfileData) => {
 								</div>
 							)
 						})}
+                        <div className='text-green-500 rounded-xl border-2 p-2 mt-2 text-center hover:bg-green-200 hover:cursor-pointer' 
+                        onClick={() => {addNewPracticeConvo(props.profile_id)}}>
+                            <Typography variant="body2">
+                                Add New Practice Conversation
+                            </Typography>
+                        </div>
 					</Typography>
 				</CardContent>
 			</Card>
@@ -73,6 +112,13 @@ const Profile = (props: ProfileData) => {
 }
 
 const HomePage = () => {
+
+    const formRedirect = () => {
+
+        window.location.assign("/form");
+
+    }
+
 	return (
 		<>
 			<UserBadgeUpdated />
@@ -84,9 +130,22 @@ const HomePage = () => {
 							name={profile.name}
 							real_convo_id={profile.real_convo_id}
 							practice_convo_ids={profile.practice_convo_ids}
+                            profile_id={profile.profile_id}
+
 						/>
 					);
 				})}
+
+                <Grid item xs={12} sm={6} md={4}>
+                    <Card variant="outlined" onClick={formRedirect} className="hover:cursor-pointer hover:bg-slate-100">
+                        <CardContent>
+                            <Typography variant="h5" component="div">
+                                Add New Match
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+
 			</Grid>
 		</>
 	);

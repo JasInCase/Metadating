@@ -4,7 +4,7 @@ import metabackend
 import json
 from flask import request
 from metabackend.api.ai_model import ai_response 
-from metabackend.api.db import find_match, update_conversation_with_profile, find_real_conversation, update_real_conversation, find_practice_conversation, update_practice_conversation
+from metabackend.api.db import find_match, update_conversation_with_profile, find_real_conversation, update_real_conversation, find_practice_conversation, update_practice_conversation, insert_practice_conversation
 import time
 
 @metabackend.app.route('/api/v1/real-conversation/<real_conversation_id>/', methods=['GET'])
@@ -58,6 +58,23 @@ def add_message_to_practice_conversation(practice_conversation_id):
     context = {
         'success': True
         # 'apiMessage': ai_message
+    }
+    return flask.jsonify(**context)
+
+@metabackend.app.route('/api/v1/practice-conversation/', methods=['POST'])
+def create_practice_conversation():
+    data = request.get_json()
+    user_id = data["userId"]
+    match_id = data["matchId"]
+
+    real_conversation = find_real_conversation(None, user_id, match_id)
+    messages = real_conversation['messages']
+    practice_conversation = insert_practice_conversation(match_id, user_id, messages)
+    practice_conversation_id = str(practice_conversation.inserted_id)
+
+
+    context = {
+        'practiceConversationId': practice_conversation_id
     }
     return flask.jsonify(**context)
 
