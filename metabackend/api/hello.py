@@ -1,7 +1,7 @@
 """Returns a hello world string!"""
 import flask
 import metabackend
-from .db import add_match
+from .db import insert_match
 
 @metabackend.app.route('/api/v1/hello/', methods=['GET'])
 def hello():

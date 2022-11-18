@@ -5,6 +5,10 @@ import Typography from '@mui/material/Typography';
 import {
   Button,
 } from "@mui/material";
+import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
+import logo from "../public/logo512.png";
+import logo2 from "./jusincase_small-01.png";
 
 const navigateToSignUpPage = () => {
     window.location.assign('/signup');
@@ -31,6 +35,18 @@ const LaunchPage = () => {
           Welcome to Metadating!!
         </Typography>
 
+        <Card>
+          <CardMedia
+            component="img"
+            height="194"
+            image="../public/jusincase_small-01.png"
+          />
+        </Card>
+
+        <img src="../public/jusincase_small-01.png" />
+        <img src="../public/logo512.png" />
+        
+
         <div className="pb-4">
           <Grid
             container
@@ -47,25 +63,25 @@ const LaunchPage = () => {
               justifyContent="center"
             >
               <Grid>
-                  <div className='p-2'>
-                    <Button
+                <div className="p-2">
+                  <Button
                     onClick={navigateToLoginPage}
                     variant="contained"
                     className="center"
-                    >
+                  >
                     Login
-                    </Button>
-                  </div>
+                  </Button>
+                </div>
               </Grid>
               <Grid>
-                <div className='p-2'>
-                    <Button
+                <div className="p-2">
+                  <Button
                     onClick={navigateToSignUpPage}
                     variant="contained"
                     className="center"
-                    >
+                  >
                     Sign Up
-                    </Button>
+                  </Button>
                 </div>
               </Grid>
             </Grid>

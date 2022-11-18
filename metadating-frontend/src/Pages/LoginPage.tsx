@@ -34,7 +34,7 @@ const sendLoginToAPI = async (username: string, password: string) => {
         },
         {
             headers: {
-                'content-type': 'application/json'
+                'content-type': 'application/json',
             }
         }
     );
@@ -103,7 +103,7 @@ const LoginPage = () => {
             // console.log(res)
             window.localStorage.setItem("username", res.data.username);
             window.localStorage.setItem("userId", res.data.userId);
-            window.location.assign('/form');
+            window.location.assign('/home');
 
         })
             .catch(err => {

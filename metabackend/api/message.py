@@ -1,17 +1,18 @@
 """Returns a hello world string!"""
 import flask
 import metabackend
-import json
 from flask import request
 from metabackend.api.ai_model import ai_response 
 from metabackend.api.db import find_match, update_conversation_with_profile, find_real_conversation, update_real_conversation, find_practice_conversation, update_practice_conversation, insert_practice_conversation
 import time
+import json
+from bson import json_util
 
 @metabackend.app.route('/api/v1/real-conversation/<real_conversation_id>/', methods=['GET'])
 def get_real_conversation(real_conversation_id):
     real_conversation = find_real_conversation(real_conversation_id, None, None)
     context = {
-        'realConversation': real_conversation
+        'realConversation': json.loads(json_util.dumps(real_conversation))
     }
     return flask.jsonify(**context)
 
@@ -39,7 +40,7 @@ def add_message_to_real_conversation(real_conversation_id):
 def get_practice_conversation(practice_conversation_id):
     practice_conversation = find_practice_conversation(practice_conversation_id)
     context = {
-        'practiceConversation': practice_conversation
+        'realConversation': json.loads(json_util.dumps(practice_conversation))
     }
     return flask.jsonify(**context)
 
@@ -69,7 +70,8 @@ def create_practice_conversation():
 
     real_conversation = find_real_conversation(None, user_id, match_id)
     messages = real_conversation['messages']
-    practice_conversation = insert_practice_conversation(match_id, user_id, messages)
+    number_of_messages_in_real_conversation = len(messages)
+    practice_conversation = insert_practice_conversation(match_id, user_id, messages, number_of_messages_in_real_conversation)
     practice_conversation_id = str(practice_conversation.inserted_id)
 
 

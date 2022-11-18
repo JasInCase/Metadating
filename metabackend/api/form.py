@@ -1,7 +1,7 @@
 """Returns a hello world string!"""
 import flask
 import metabackend
-from .db import add_match, insert_real_conversation
+from .db import insert_match, insert_real_conversation
 
 @metabackend.app.route('/api/v1/form/', methods=['POST'])
 def store_form_data():
@@ -14,7 +14,7 @@ def store_form_data():
     user_id = flask.request.json["userId"]
 
     match = {'name': name, 'age': age, 'gender': gender, 'interests': interests, 'user_id': user_id}
-    response = add_match(match)
+    response = insert_match(match)
     match_id = str(response.inserted_id)
     insert_real_conversation(match_id, user_id)
 
