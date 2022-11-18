@@ -14,13 +14,17 @@ $name$'s profile:
 Age: $age$
 Gender: $gender$
 Interests: $interests$
-Traits: Non-apologetic, creative, inquisitive, enthusiastic, flirty"""
+Traits: Non-apologetic, creative, inquisitive, enthusiastic, flirty
+
+###"""
 
 PROFILE_NOINTEREST = """\
 Age: $age$
 Gender: $gender$
 Hometown: $city$, $country$
-Traits: Non-apologetic, creative, inquisitive, enthusiastic, flirty"""
+Traits: Non-apologetic, creative, inquisitive, enthusiastic, flirty
+
+###"""
 
 def build_profile(profile, interests = True):
     """Fill profile data into a template for use by GPT-3.

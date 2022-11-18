@@ -1,16 +1,16 @@
-# Using `finetune.py`
+# Using `finetune_data.py`
 
-`finetune.py` takes a json file of user profiles and messages and converts it 
-into a JSONL format ready for GPT-3's fine-tuning process.
+`finetune_data.py` takes a json file of user profiles and messages and 
+converts it into a JSONL format ready for GPT-3's fine-tuning process.
 
 For more data on fine-tuning, see 
 https://beta.openai.com/docs/guides/fine-tuning. Instructions on how to
 fine-tune will be added here soon.
 
-`finetune.py` can be used as follows:
+`finetune_data.py` can be used as follows:
 
 ```
-usage: finetune.py [-h] --input_file INPUT_FILE [--output_file OUTPUT_FILE] [-n N] [--max_tokens MAX_TOKENS] [--quiet] --select {first,random,r_uniq,greed}
+usage: finetune_data.py [-h] --input_file INPUT_FILE [--output_file OUTPUT_FILE] [-n N] [--max_tokens MAX_TOKENS] [--quiet] --select {first,random,r_uniq,greed}
 
 Prepare data for fine-tuning a GPT-3 model.
 

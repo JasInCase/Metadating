@@ -28,6 +28,10 @@ parser.add_argument('--max_tokens', '-t', default=16, required=False,
                         single message.")
 parser.add_argument('--quiet', '-q', action="store_true",
                     help="Don't log info or show progress bars.")
+parser.add_argument('--group_threshold', '-gt', default=100,
+                    help="For every GT messages, make 1 more group of \
+                        examples. e.g. GT=100 -> user with 205 messages gets \
+                        3 groups.")
 
 SELECT = {}
 
@@ -55,28 +59,36 @@ def selection_help():
 
 
 @select_func('first')
-def first_n(msgs, count):
+def first_n(msgs, count, ngroups=1):
     """Take the first N messages."""
-    return msgs[:count]
+    for i in range(ngroups):
+        yield msgs[i:i+count]
 
 
 @select_func('random')
-def random_n(msgs, count):
+def random_n(msgs, count, ngroups=1):
     """Choose N random messages."""
     if count > len(msgs):
-        return msgs
-    return random.sample(msgs, count)
+        return [msgs]
+    for _ in range(ngroups):
+        yield random.sample(msgs, count)
 
 
 @select_func('r_uniq')
-def random_u(msgs, count):
+def random_u(msgs, count, ngroups=1):
     """Choose N random unique messages."""
     msgs = list(set(msgs))
-    return random_n(msgs, count)
+    for _ in range(ngroups):
+        if count > len(msgs):
+            yield msgs
+            break
+        group = random.sample(msgs, count)
+        msgs = list(set(msgs) - set(group))
+        yield group
 
 
 @select_func('greed')
-def max_unique_tok(msgs, count):
+def max_unique_tok(msgs, count, ngroups=1):
     """Greedily maximize unique tokens."""
     res = []
     sets = [set(tokenizer(m)['input_ids']) for m in msgs]
@@ -87,30 +99,32 @@ def max_unique_tok(msgs, count):
         del sets[i]
         for toks in sets:
             toks -= toks_0
-    return res
+    yield res
 
 
-def build_line(user, select, count):
+def build_line(user, select, count, group_threshold):
     """Create a JSONL line for a user, with a prompt and completion.
 
     Parameters:
         user - Dict type with parameters "name", "age", "messages", etc.
         select - Function for picking n messages from the list.
         count - Number of messages to present to GPT-3.
+        group_threshold - For every GT messages, make 1 more group of examples.
     """
     messages = select(user['messages'], count)
-    res = '{"prompt": "' + build_profile(user, False) + \
-          '", "completion": "' + example_messages(messages) + '"}'
-    return res.encode('unicode_escape').decode('utf-8') + '\n'
+
+    # for every gt messages, we want one additional group of example messages
+    ngroups = 1 + len(messages) // group_threshold
+    for msgs in example_messages(messages, ngroups=ngroups):
+        res = '{"prompt": "' + build_profile(user, False) + \
+                '", "completion": "\n\n' + msgs + '\n\n###"}'
+    # return res.encode('unicode_escape').decode('utf-8') + '\n'
+    return res + '\n'
 
 
 def unescape(text: str):
-    """Unescape html and unicode markers to get the original text."""
+    """Unescape html to get the original text."""
     text = html.unescape(text)
-    text = text.encode('unicode-escape')
-    text = text.replace(b'\\\\u', b'\\u')
-    text = text.replace(b'\\\\U', b'\\U')
-    text = text.decode('unicode-escape')
     return text
 
 
