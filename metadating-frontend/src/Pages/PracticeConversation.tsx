@@ -14,6 +14,7 @@ import { createTheme } from '@mui/material/styles';
 const sendMessage = async (conversationId: string, message: string) => {
     const response = await axios.post(`/api/v1/practice-conversation/${conversationId}/message/`, {
         message: message,
+        is_user: true,
     }, {
         headers: {
             // 'application/json' is the modern content-type for JSON, but some
@@ -26,6 +27,7 @@ const sendMessage = async (conversationId: string, message: string) => {
 }
 
 const getExistingMessages = async (id: string) => {
+    // NEED TO WRITE GET REQUEST HERE
     return {
         messages: [
             {

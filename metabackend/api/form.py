@@ -16,6 +16,8 @@ def store_form_data():
     match = {'name': name, 'age': age, 'gender': gender, 'interests': interests, 'user_id': user_id}
     response = insert_match(match)
     match_id = str(response.inserted_id)
+    print(match_id)
+    print(user_id)
     insert_real_conversation(match_id, user_id)
 
     context = {"string": match_id}
@@ -35,5 +37,6 @@ def store_form_data():
     print("New Flask Session:", flask.session)
     context = {"string": match_id}
     '''
+    status_code = 200
 
     return flask.jsonify(**context), status_code

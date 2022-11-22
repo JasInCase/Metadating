@@ -15,7 +15,7 @@ import axios from 'axios';
 type ProfileData = {
 	name: string,
 	real_convo_id: string,
-	practice_convo_ids: string[],
+	practice_convo_ids: any[],
     profile_id: string, // This needs to be updated to the match ID we get from the original get request
     match_id: string
 }
@@ -101,7 +101,7 @@ const Profile = (props: ProfileData) => {
                         </Typography>
                     </div>
 					<Typography sx={{ mb: 1.5 }} color="text.secondary">
-						<Link href={`/conversation/${props.real_convo_id}`} underline="hover">
+						<Link href={`/real-conversation/${props.real_convo_id}`} underline="hover">
 							Real Conversation
 						</Link>
 					</Typography>
@@ -110,7 +110,7 @@ const Profile = (props: ProfileData) => {
                         <Typography variant="body2">
                             {props.practice_convo_ids.map((convo_id, index) => {
                                 return (
-                                    <Link href={`/conversation/${convo_id}`} underline="hover">
+                                    <Link href={`/practice-conversation/${convo_id._id.$oid}`} underline="hover">
                                         Practice Conversation {index}
                                     </Link>
                                 )
@@ -145,13 +145,16 @@ const HomePage = () => {
         getData().then((response) => {
 
             let matchesArray : any = []
+            console.log(response);
             for (const [key, resObject] of response.entries()) {
-
+                // console.log(resObject);
                 let matchObject : any = {};
 
                 matchObject['profile_id'] = resObject.match.user_id;
                 matchObject['name'] = resObject.match.name;
-                matchObject['real_convo_id'] = resObject.real_conversation;
+                matchObject['real_convo_id'] = resObject.real_conversation._id.$oid;
+                // matchObject['real_convo_id'] = resObject.real_conversation;
+                // matchObject['practice_convo_ids'] = resObject.practice_conversations;
                 matchObject['practice_convo_ids'] = resObject.practice_conversations;
                 matchObject['match_id'] = resObject.match._id.$oid;
                 matchObject['user_id'] = resObject.match.user_id;

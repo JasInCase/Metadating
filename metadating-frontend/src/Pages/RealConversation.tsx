@@ -14,7 +14,7 @@ import { createTheme } from '@mui/material/styles';
 const sendMessage = async (conversationId: string, message: string, isUser: boolean) => {
     const response = await axios.post(`/api/v1/real-conversation/${conversationId}/message/`, {
         message: message,
-        isUser: isUser,
+        is_user: isUser,
     }, {
         headers: {
             // 'application/json' is the modern content-type for JSON, but some

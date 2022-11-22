@@ -25,7 +25,10 @@ def add_message_to_real_conversation(real_conversation_id):
 
     real_conversation = find_real_conversation(real_conversation_id, None, None)
     new_message = {'text': message, 'is_user': is_user}
-    new_messages = real_conversation['messages'].append(new_message)
+    new_messages = real_conversation['messages']
+    if new_messages is None:
+        new_messages = []
+    new_messages.append(new_message)
     update_real_conversation(real_conversation_id, new_messages)
     
     context = {
@@ -51,7 +54,10 @@ def add_message_to_practice_conversation(practice_conversation_id):
 
     practice_conversation = find_practice_conversation(practice_conversation_id, None, None)
     new_message = {'text': message, 'is_user': True}
-    new_messages = practice_conversation['messages'].append(new_message)
+    new_messages = practice_conversation['messages']
+    if new_messages is None:
+        new_messages = []
+    new_messages.append(new_message)
     # TODO: Call AI
     # TODO: Get response from AI and append to messages list
     update_practice_conversation(practice_conversation_id, new_messages)
@@ -69,11 +75,13 @@ def create_practice_conversation():
     match_id = data["matchId"]
 
     real_conversation = find_real_conversation(None, user_id, match_id)
+    print(real_conversation)
     messages = real_conversation['messages']
+    if messages is None:
+        messages = []
     number_of_messages_in_real_conversation = len(messages)
     practice_conversation = insert_practice_conversation(match_id, user_id, messages, number_of_messages_in_real_conversation)
     practice_conversation_id = str(practice_conversation.inserted_id)
-
 
     context = {
         'practiceConversationId': practice_conversation_id
