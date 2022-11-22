@@ -16,6 +16,7 @@ Gender: $gender$
 Interests: $interests$
 Traits: Non-apologetic, creative, inquisitive, enthusiastic, flirty
 
+Messages
 ###"""
 
 PROFILE_NOINTEREST = """\
@@ -24,6 +25,7 @@ Gender: $gender$
 Hometown: $city$, $country$
 Traits: Non-apologetic, creative, inquisitive, enthusiastic, flirty
 
+Messages
 ###"""
 
 def build_profile(profile, interests = True):
@@ -51,7 +53,9 @@ def example_messages(msgs):
     Parameters:
         msgs - List of strings, each to go on its own line.
     """
-    res = "\n\nExample messages:"
+    # res = "\n\nExample messages:"
+    res = ""
     for msg in msgs:
-        res += "\n - " + msg
+        # res += "\n - " + msg
+        res += "\n" + msg
     return res

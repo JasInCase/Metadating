@@ -4,11 +4,16 @@ import html
 import json
 import argparse
 import random
+import re
 from tqdm import tqdm
 
-from transformers import GPT2TokenizerFast
+from langdetect import detect, DetectorFactory, lang_detect_exception
+from transformers import GPT2TokenizerFast, logging
 
 from template import build_profile, example_messages
+
+DetectorFactory.seed = 42
+logging.set_verbosity_error()
 
 tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
 
@@ -33,6 +38,8 @@ parser.add_argument('--group_threshold', '-gt', default=100,
                         examples. e.g. GT=100 -> user with 205 messages gets \
                         3 groups.")
 
+PHONE_REGEX = re.compile(r"\+?1?\(?\d{3}\)?\s*-?\s*\d{3}\s*-?\s*\d{4}")
+GIF_REGEX = re.compile(r"https:\/\/media(\.tenor|\d\.giphy)\.com")
 SELECT = {}
 
 
@@ -41,10 +48,11 @@ def select_func(name):
     def dec(func):
         desc = func.__doc__
 
-        def func_wrap(msgs, count):
+        def func_wrap(msgs, count, ngroups=1):
             if len(msgs) < count:
-                return msgs
-            return func(msgs, count)
+                return [msgs]
+            for msgs in func(msgs, count, ngroups):
+                yield example_messages(msgs)
         SELECT[name] = (func_wrap, desc)
         return func_wrap
     return dec
@@ -90,16 +98,18 @@ def random_u(msgs, count, ngroups=1):
 @select_func('greed')
 def max_unique_tok(msgs, count, ngroups=1):
     """Greedily maximize unique tokens."""
+    msgs = list(set(msgs))
     res = []
     sets = [set(tokenizer(m)['input_ids']) for m in msgs]
-    for _ in range(count):
+    for _ in range(count * ngroups):
         i, toks_0 = max(enumerate(sets), key=lambda x: len(x[1]))
         res.append(msgs[i])
         del msgs[i]
         del sets[i]
         for toks in sets:
             toks -= toks_0
-    yield res
+    for i in range(ngroups):
+        yield res[i::ngroups]
 
 
 def build_line(user, select, count, group_threshold):
@@ -111,21 +121,44 @@ def build_line(user, select, count, group_threshold):
         count - Number of messages to present to GPT-3.
         group_threshold - For every GT messages, make 1 more group of examples.
     """
-    messages = select(user['messages'], count)
+    # messages = select(user['messages'], count)
+    messages = user['messages']
 
     # for every gt messages, we want one additional group of example messages
     ngroups = 1 + len(messages) // group_threshold
-    for msgs in example_messages(messages, ngroups=ngroups):
-        res = '{"prompt": "' + build_profile(user, False) + \
-                '", "completion": "\n\n' + msgs + '\n\n###"}'
-    # return res.encode('unicode_escape').decode('utf-8') + '\n'
-    return res + '\n'
+    for msgs in select(messages, count, ngroups=ngroups):
+        line = '{"prompt": "' + build_profile(user, False) + \
+                '", "completion": "' + msgs + '\n\n###"}'
+        line = line.replace('\n', '\\\\n') + '\n'
+        yield line
 
 
 def unescape(text: str):
     """Unescape html to get the original text."""
     text = html.unescape(text)
     return text
+
+
+def valid_messages(msgs: list, max_tokens: int):
+    """Yield all valid messages in the list provided, unescaping HTML."""
+    for msg in set(msgs):
+        msg = unescape(msg)
+        if any((
+            "\"" in msg,
+            "\\" in msg,
+            len(msg) < 4,
+            len(msg) >= 4096,
+            GIF_REGEX.search(msg) is not None,
+            PHONE_REGEX.search(msg) is not None,
+            len(tokenizer(msg)['input_ids']) >= max_tokens
+        )):
+            continue
+        try:
+            if detect(msg) != 'en':
+                continue
+        except lang_detect_exception.LangDetectException:
+            pass
+        yield msg
 
 
 def validate_args(arg):
@@ -158,13 +191,12 @@ def main(args):
     select = SELECT[args.select][0]
 
     train = ""
-    for user in tqdm(data, disable=args.quiet):
-        user["messages"] = [
-            unescape(msg) for msg in user["messages"] if
-            (len(msg) < 4096 and
-             len(tokenizer(msg)['input_ids']) < args.max_tokens)
-        ]
-        train += build_line(user, select, args.n)
+    for user in tqdm(data[:], disable=args.quiet):
+        user["messages"] = list(
+            valid_messages(user["messages"], args.max_tokens)
+        )
+        for line in build_line(user, select, args.n, args.group_threshold):
+            train += line
 
     with open(args.output_file, 'w', encoding='utf-8') as file:
         file.write(train)

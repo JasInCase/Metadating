@@ -1,0 +1,25 @@
+wandb: ERROR Failed to open the provided file (UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f62c' in position 1311: character maps to <undefined>). Please provide the proper encoding.
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\runpy.py", line 197, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "C:\Users\Brighton\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\Scripts\openai.exe\__main__.py", line 7, in <module>
+    sys.exit(main())
+  File "C:\Users\Brighton\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\openai\_openai_scripts.py", line 63, in main
+    args.func(args)
+  File "C:\Users\Brighton\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\openai\cli.py", line 586, in sync
+    resp = openai.wandb_logger.WandbLogger.sync(
+  File "C:\Users\Brighton\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\openai\wandb_logger.py", line 74, in sync
+    fine_tune_logged = [
+  File "C:\Users\Brighton\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\openai\wandb_logger.py", line 75, in <listcomp>
+    cls._log_fine_tune(
+  File "C:\Users\Brighton\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\openai\wandb_logger.py", line 172, in _log_fine_tune
+    cls._log_artifacts(fine_tune, project, entity)
+  File "C:\Users\Brighton\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\openai\wandb_logger.py", line 236, in _log_artifacts
+    cls._log_artifact_inputs(file, prefix, artifact_type, project, entity)
+  File "C:\Users\Brighton\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\LocalCache\local-packages\Python39\site-packages\openai\wandb_logger.py", line 280, in _log_artifact_inputs
+    f.write(file_content)
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.9_3.9.3568.0_x64__qbz5n2kfra8p0\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f62c' in position 1311: character maps to <undefined>
