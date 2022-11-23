@@ -43,8 +43,8 @@ const LaunchPage = () => {
           />
         </Card>
 
-        <img src="../public/jusincase_small-01.png" />
-        <img src="../public/logo512.png" />
+        <img src="../public/jusincase_small-01.png" /> 
+        <img src="https://cdn.discordapp.com/attachments/1045084322052440105/1045084371192918056/logo512.png" />
         
 
         <div className="pb-4">
