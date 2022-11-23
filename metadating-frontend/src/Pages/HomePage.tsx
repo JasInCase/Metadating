@@ -26,7 +26,7 @@ const getData = async () => {
     let userId = window.localStorage.getItem("userId");
 
     // axios.get(`/api/v1/matches/${userId}`, {
-    const response = await axios.get(`/api/v1/matches/${userId}`, {
+    const response = await axios.get(`/api/v1/matches/${userId}/`, {
     // const response = await axios.get(`/api/v1/matches/6362be4b232ed7fb4791d53e`, {
         headers: {
             // 'application/json' is the modern content-type for JSON, but some
@@ -106,12 +106,12 @@ const Profile = (props: ProfileData) => {
 						</Link>
 					</Typography>
 					<hr/>
-                    <div className='pb-1'>
+                    <div className='pb-1 pt-2'>
                         <Typography variant="body2">
                             {props.practice_convo_ids.map((convo_id, index) => {
                                 return (
                                     <Link href={`/practice-conversation/${convo_id._id.$oid}`} underline="hover">
-                                        Practice Conversation {index}
+                                        Practice Conversation {index} <br></br>
                                     </Link>
                                 )
                             })}

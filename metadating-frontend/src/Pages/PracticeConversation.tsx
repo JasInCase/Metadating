@@ -23,31 +23,49 @@ const sendMessage = async (conversationId: string, message: string) => {
         }
     });
 
+    // return response.data.apiMessage;
     return response;
 }
 
 const getExistingMessages = async (id: string) => {
     // NEED TO WRITE GET REQUEST HERE
+
+    const response = await axios.get(`/api/v1/practice-conversation/${id}/`,
+        {
+            headers: {
+                'content-type': 'application/json'
+            }
+        }
+    );
+
+    console.log("Practice Conversation Response:")
+    console.log(response)
+    // console.log(response.data.practiceConversation.messages)
+    return {
+        messages: response.data.practiceConversation.messages,
+        index_of_practice_start: response.data.practiceConversation.number_of_messages_in_real_conversation
+    }
+
     return {
         messages: [
             {
-                message: "KING JULIAN! KING JULIAN!",
+                text: "KING JULIAN! KING JULIAN!",
                 is_user: true
             },
             {
-                message: "What, Mort?",
+                text: "What, Mort?",
                 is_user: false
             },
             {
-                message: "Can I touch your feeeeeeeeeet?",
+                text: "Can I touch your feeeeeeeeeet?",
                 is_user: true
             },
             {
-                message: "PLEEEEEEEASE?!!!",
+                text: "PLEEEEEEEASE?!!!",
                 is_user: true
             },
             {
-                message: "why am i friends with you",
+                text: "why am i friends with you",
                 is_user: false
             }
         ],
@@ -64,7 +82,7 @@ const PracticeConversationPage = () => {
     const { id } = useParams<ConvoParams>();
 
     const [userMessage, setUserMessage] = useState("");
-    const [messages, setMessages] = useState<{ message: string, is_user: boolean }[]>([]);
+    const [messages, setMessages] = useState<{ text: string, is_user: boolean }[]>([]);
     const [firstPracticeIndex, setFirstPracticeIndex] = useState(-1);
     const [disableInput, setDisableInput] = useState(false);
     const messageRef = useRef<HTMLDivElement>(null);
@@ -126,7 +144,7 @@ const PracticeConversationPage = () => {
 
         setDisableInput(true);
         const newMessage = {
-            message: userMessage,
+            text: userMessage,
             is_user: true
         };
 
@@ -136,7 +154,9 @@ const PracticeConversationPage = () => {
         setMessages(newMessageList);
 
         if (id) {
-            sendMessage(id, newMessage.message).then(response => {
+            sendMessage(id, newMessage.text).then(response => {
+                console.log("Response:");
+                console.log(response);
                 if (response.status === 200) {
                     return response.data;
                 } else {
@@ -145,7 +165,7 @@ const PracticeConversationPage = () => {
             })
             .then(data => {
                 const responseMessage = {
-                    message: data.AI_message,
+                    text: data.aiMessage,
                     is_user: false
                 };
                 newMessageList = [...newMessageList, responseMessage];
@@ -176,11 +196,21 @@ const PracticeConversationPage = () => {
                     <List sx={{ width: '100%' }}>
                         
                         {messages.map((message: any, index: number) => (
+                            <div key={index}>
 
-                            <div key={index} className='m-10 rounded-3xl shadow-lg'>
-                                <MessageObject message={message.message} is_user={message.is_user} is_practice={index >= firstPracticeIndex} />
+                                {index === firstPracticeIndex && 
+                                    <div className='m-1 rounded-3xl shadow-lg bg-black'>
+                                        <ListItem className='bg-black-500'>
+                                        </ListItem>
+                                    </div>
+                                }
+
+                                <div key={index} className='m-10 rounded-3xl shadow-lg'>
+                                    {/* {(index == firstPracticeIndex) & <hr></hr>} */}
+                                    <MessageObject message={message.text} is_user={message.is_user} is_practice={index >= firstPracticeIndex} />
+                                </div>
+
                             </div>
-
                         ))}
 
                     </List>

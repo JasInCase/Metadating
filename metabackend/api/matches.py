@@ -7,7 +7,7 @@ from metabackend.api.db import find_matches, find_real_conversation, find_practi
 import json
 from bson import json_util
 
-@metabackend.app.route('/api/v1/matches/<user_id>', methods=['GET'])
+@metabackend.app.route('/api/v1/matches/<user_id>/', methods=['GET'])
 def get_matches(user_id):
     matches = find_matches(user_id)
     result_matches = []

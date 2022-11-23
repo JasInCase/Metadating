@@ -28,13 +28,19 @@ const sendMessage = async (conversationId: string, message: string, isUser: bool
 
 const getExistingMessages = async (id: string) => {
 
-    const response = await axios.get(`api/v1/real-conversation/${id}`,
+    
+    const response = await axios.get(`/api/v1/real-conversation/${id}/`,
         {
             headers: {
                 'content-type': 'application/json'
             }
         }
     );
+
+    console.log("Real Conversation Response:")
+    console.log(response)
+
+    return response.data.realConversation.messages;
 
     // Something like this when the backend is rdy
     // toReturn = response.data.messages;
@@ -67,7 +73,7 @@ const RealConversationPage = () => {
 
     const [userMessage, setUserMessage] = useState("");
     const [matchMessage, setMatchMessage] = useState("");
-    const [messages, setMessages] = useState<{ message: string, is_user: boolean }[]>([]);
+    const [messages, setMessages] = useState<{ text: string, is_user: boolean }[]>([]);
     const [disableInput, setDisableInput] = useState(false);
     const messageRef = useRef<HTMLDivElement>(null);
 
@@ -76,7 +82,9 @@ const RealConversationPage = () => {
 
         if (id) {
             getExistingMessages(id).then((messageArray : any) => {
-                setMessages(messageArray);
+                if (messageArray !== null) {
+                    setMessages(messageArray);
+                }
             });
         }
         else {
@@ -130,7 +138,7 @@ const RealConversationPage = () => {
 
         setDisableInput(true);
         const newMessage = {
-            message: is_user ? userMessage : matchMessage,
+            text: is_user ? userMessage : matchMessage,
             is_user: is_user
         };
 
@@ -140,7 +148,7 @@ const RealConversationPage = () => {
         setMessages(newMessageList);
 
         if (id) {
-            sendMessage(id, newMessage.message, newMessage.is_user).then(apiResponse => {
+            sendMessage(id, newMessage.text, newMessage.is_user).then(apiResponse => {
                 if (apiResponse.status === 200) {
                     return apiResponse.data.apiMessage;
                 } else {
@@ -186,7 +194,7 @@ const RealConversationPage = () => {
                         {messages.map((message: any, index: number) => (
 
                             <div key={index} className='m-10 rounded-3xl shadow-lg'>
-                                <MessageObject message={message.message} is_user={message.is_user} />
+                                <MessageObject message={message.text} is_user={message.is_user} />
                             </div>
 
                         ))}

@@ -24,6 +24,8 @@ def add_message_to_real_conversation(real_conversation_id):
     is_user = data["is_user"]
 
     real_conversation = find_real_conversation(real_conversation_id, None, None)
+    # TODO: Error handling if conversation does not exist
+
     new_message = {'text': message, 'is_user': is_user}
     new_messages = real_conversation['messages']
     if new_messages is None:
@@ -43,7 +45,7 @@ def add_message_to_real_conversation(real_conversation_id):
 def get_practice_conversation(practice_conversation_id):
     practice_conversation = find_practice_conversation(practice_conversation_id)
     context = {
-        'realConversation': json.loads(json_util.dumps(practice_conversation))
+        'practiceConversation': json.loads(json_util.dumps(practice_conversation))
     }
     return flask.jsonify(**context)
 
@@ -52,19 +54,23 @@ def add_message_to_practice_conversation(practice_conversation_id):
     data = request.get_json()
     message = data["message"]
 
-    practice_conversation = find_practice_conversation(practice_conversation_id, None, None)
+    practice_conversation = find_practice_conversation(practice_conversation_id)
     new_message = {'text': message, 'is_user': True}
     new_messages = practice_conversation['messages']
     if new_messages is None:
         new_messages = []
     new_messages.append(new_message)
-    # TODO: Call AI
-    # TODO: Get response from AI and append to messages list
+    
+    match_id = str(practice_conversation['match_id'])
+    match = find_match(match_id)
+    aiMessage = ai_response(new_messages, match)
+    aiMessageObject = {'text': aiMessage, 'is_user': False}
+    new_messages.append(aiMessageObject)
     update_practice_conversation(practice_conversation_id, new_messages)
     
     context = {
-        'success': True
-        # 'apiMessage': ai_message
+        'success': True,
+        'aiMessage': aiMessage
     }
     return flask.jsonify(**context)
 
@@ -75,7 +81,7 @@ def create_practice_conversation():
     match_id = data["matchId"]
 
     real_conversation = find_real_conversation(None, user_id, match_id)
-    print(real_conversation)
+    # print(real_conversation)
     messages = real_conversation['messages']
     if messages is None:
         messages = []
