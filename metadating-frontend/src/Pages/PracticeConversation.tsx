@@ -43,6 +43,7 @@ const getExistingMessages = async (id: string) => {
     // console.log(response.data.practiceConversation.messages)
     return {
         messages: response.data.practiceConversation.messages,
+        matchName: response.data.matchName,
         index_of_practice_start: response.data.practiceConversation.number_of_messages_in_real_conversation
     }
 
@@ -81,6 +82,7 @@ const PracticeConversationPage = () => {
     };
     const { id } = useParams<ConvoParams>();
 
+    const [matchName, setMatchName] = useState("");
     const [userMessage, setUserMessage] = useState("");
     const [messages, setMessages] = useState<{ text: string, is_user: boolean }[]>([]);
     const [firstPracticeIndex, setFirstPracticeIndex] = useState(-1);
@@ -91,6 +93,7 @@ const PracticeConversationPage = () => {
 
         if (id) {
             getExistingMessages(id).then((response : any) => {
+                setMatchName(response.matchName);
                 setMessages(response.messages);
                 setFirstPracticeIndex(response.index_of_practice_start);
             });
@@ -191,7 +194,8 @@ const PracticeConversationPage = () => {
 
                 <Container maxWidth="md" fixed={true} className="shadow-2xl rounded-3xl bg-pink-200">
 
-                    <Typography className="pt-3 pb-1" variant="h3" component="h3" align="center"> Conversation Feed </Typography>
+                    <Typography className="pt-3 pb-1" variant="h3" component="h3" align="center"> Practice Conversation Feed </Typography>
+                    <Typography className="" variant="body1" component="h1" align="center">with {matchName}</Typography>
 
                     <List sx={{ width: '100%' }}>
                         

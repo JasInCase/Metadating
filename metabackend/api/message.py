@@ -11,8 +11,12 @@ from bson import json_util
 @metabackend.app.route('/api/v1/real-conversation/<real_conversation_id>/', methods=['GET'])
 def get_real_conversation(real_conversation_id):
     real_conversation = find_real_conversation(real_conversation_id, None, None)
+    match_id = str(real_conversation['match_id'])
+    match = find_match(match_id)
+    match_name = match['name']
     context = {
-        'realConversation': json.loads(json_util.dumps(real_conversation))
+        'realConversation': json.loads(json_util.dumps(real_conversation)),
+        'matchName': match_name
     }
     return flask.jsonify(**context)
 
@@ -44,8 +48,12 @@ def add_message_to_real_conversation(real_conversation_id):
 @metabackend.app.route('/api/v1/practice-conversation/<practice_conversation_id>/', methods=['GET'])
 def get_practice_conversation(practice_conversation_id):
     practice_conversation = find_practice_conversation(practice_conversation_id)
+    match_id = str(practice_conversation['match_id'])
+    match = find_match(match_id)
+    match_name = match['name']
     context = {
-        'practiceConversation': json.loads(json_util.dumps(practice_conversation))
+        'practiceConversation': json.loads(json_util.dumps(practice_conversation)),
+        'matchName': match_name
     }
     return flask.jsonify(**context)
 

@@ -40,7 +40,8 @@ const getExistingMessages = async (id: string) => {
     console.log("Real Conversation Response:")
     console.log(response)
 
-    return response.data.realConversation.messages;
+    // return response.data.realConversation.messages;
+    return response.data;
 
     // Something like this when the backend is rdy
     // toReturn = response.data.messages;
@@ -71,6 +72,7 @@ const RealConversationPage = () => {
     };
     const { id } = useParams<ConvoParams>();
 
+    const [matchName, setMatchName] = useState("");
     const [userMessage, setUserMessage] = useState("");
     const [matchMessage, setMatchMessage] = useState("");
     const [messages, setMessages] = useState<{ text: string, is_user: boolean }[]>([]);
@@ -82,8 +84,9 @@ const RealConversationPage = () => {
 
         if (id) {
             getExistingMessages(id).then((messageArray : any) => {
-                if (messageArray !== null) {
-                    setMessages(messageArray);
+                setMatchName(messageArray.matchName)
+                if (messageArray.realConversation.messages !== null) {
+                    setMessages(messageArray.realConversation.messages);
                 }
             });
         }
@@ -187,7 +190,8 @@ const RealConversationPage = () => {
 
                 <Container maxWidth="md" fixed={true} className="shadow-2xl rounded-3xl bg-pink-200">
 
-                    <Typography className="pt-3 pb-1" variant="h3" component="h3" align="center"> Conversation Feed </Typography>
+                    <Typography className="pt-3 pb-1" variant="h3" component="h3" align="center"> Real Conversation Feed </Typography>
+                    <Typography className="" variant="body1" component="h1" align="center">with {matchName}</Typography>
 
                     <List sx={{ width: '100%' }}>
                         
