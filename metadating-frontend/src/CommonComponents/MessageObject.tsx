@@ -16,7 +16,8 @@ const MessageObject = (props: MessageData) => {
 
 				<Typography className="py-2" sx={{ maxWidth: '55%', wordWrap: 'break-word' }} > {message} </Typography>
 				<ListItemAvatar className='m-2 hover:shadow-2xl'>
-					<Avatar alt="user1" src="https://avatars.dicebear.com/api/male/boy3.svg" />
+					{/* <Avatar alt="user1" src="https://avatars.dicebear.com/api/male/boy3.svg" /> */}
+					<Avatar alt="user1" src="https://avatars.dicebear.com/api/pixel-art-neutral/abcdddddddddddddddddddddddddddddddddddddddddddddddddddddddddd.svg" />
 				</ListItemAvatar>
 				{/* {isHovering && hoveringIndex == index && (
 					<IconButton>
@@ -32,7 +33,8 @@ const MessageObject = (props: MessageData) => {
 
 			<ListItem key={message} className={`${is_practice ? "bg-slate-200" : "bg-slate-200"} rounded-3xl animate-ping-once`}>
 				<ListItemAvatar className='m-2 hover:shadow-2xl'>
-					<Avatar alt="user2" src="https://avatars.dicebear.com/api/female/girl12.svg" />
+					{/* <Avatar alt="user2" src="https://avatars.dicebear.com/api/female/girl12.svg" /> */}
+					<Avatar alt="user2" src="https://avatars.dicebear.com/api/pixel-art-neutral/abcdddddddd.svg" />
 				</ListItemAvatar>
 				<Typography className="py-2" sx={{ maxWidth: '55%', wordWrap: 'break-word' }} > {message} </Typography>
 			</ListItem>
