@@ -5,6 +5,8 @@ import Typography from '@mui/material/Typography';
 import {
   Button,
 } from "@mui/material";
+import CompanyTag from "../CommonComponents/CompanyTag";
+import MetadatingHeader from "../CommonComponents/MetadatingHeader";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import logo from "../public/logo512.png";
@@ -26,26 +28,7 @@ const LaunchPage = () => {
         fixed={true}
         className="shadow-2xl rounded-3xl bg-purple-200"
       >
-        <Typography
-          className="pt-3 pb-1"
-          variant="h3"
-          component="h3"
-          align="center"
-        >
-          Welcome to Metadating!!
-        </Typography>
-
-        <Card>
-          <CardMedia
-            component="img"
-            height="194"
-            image="../public/jusincase_small-01.png"
-          />
-        </Card>
-
-        <img src="../public/jusincase_small-01.png" /> 
-        <img src="https://cdn.discordapp.com/attachments/1045084322052440105/1045084371192918056/logo512.png" />
-        
+        <MetadatingHeader prefixText="Welcome to" />
 
         <div className="pb-4">
           <Grid
@@ -87,6 +70,8 @@ const LaunchPage = () => {
             </Grid>
           </Grid>
         </div>
+
+        <CompanyTag />
       </Container>
     </div>
   );

@@ -4,6 +4,8 @@ import Grid from '@mui/material/Grid'
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import { Alert, Button, CircularProgress, FormControl, FormHelperText, InputLabel, OutlinedInput, styled } from '@mui/material';
+import CompanyTag from '../CommonComponents/CompanyTag';
+import MetadatingHeader from "../CommonComponents/MetadatingHeader";
 
 export async function getMessageFromAPI() {
     const response = await axios.get('/api/v1/hello/');
@@ -164,14 +166,7 @@ const SignUpPage = () => {
           fixed={true}
           className="shadow-2xl rounded-3xl bg-purple-200"
         >
-          <Typography
-            className="pt-3 pb-1"
-            variant="h3"
-            component="h3"
-            align="center"
-          >
-            Sign Up
-          </Typography>
+          <MetadatingHeader prefixText="Sign up for" />
 
           <div className="pt-3 pb-2">
             <div className="p-2">
@@ -279,6 +274,8 @@ const SignUpPage = () => {
               </Grid>
             </Grid>
           </div>
+
+          <CompanyTag />
         </Container>
       </div>
     );
