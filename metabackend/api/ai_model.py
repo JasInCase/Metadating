@@ -5,7 +5,8 @@ import metabackend
 import flask
 from flask import request
 
-from template import build_profile
+from metabackend.api.template import build_profile
+# from template import build_profile
 
 # OC DO NOT STEAL:
 openai.api_key = "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"
