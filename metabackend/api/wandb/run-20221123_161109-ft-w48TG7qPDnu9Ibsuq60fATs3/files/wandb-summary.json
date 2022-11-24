@@ -1,0 +1,1 @@
+{"elapsed_tokens": 3048200.0, "elapsed_examples": 22472.0, "training_loss": 1.678944016381234, "training_sequence_accuracy": 0.0, "training_token_accuracy": 0.5047169811320755, "_timestamp": 1669237870.5923367, "_runtime": 0.900930643081665, "_step": 2809, "fine_tuned_model": "ada:ft-jasincase-2022-11-22-20-43-54", "status": "succeeded", "_wandb": {"runtime": 10}}

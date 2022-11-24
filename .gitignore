@@ -55,6 +55,7 @@ Icon
 
 # testing
 /coverage
+metabackend/api/laboratory.ipynb
 
 # production
 /build

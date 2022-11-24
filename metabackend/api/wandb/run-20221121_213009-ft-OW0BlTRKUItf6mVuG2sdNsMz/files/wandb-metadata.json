@@ -1,0 +1,56 @@
+{
+    "os": "Windows-10-10.0.19045-SP0",
+    "python": "3.9.13",
+    "heartbeatAt": "2022-11-22T02:30:10.350839",
+    "startedAt": "2022-11-22T02:30:09.811267",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "-k",
+        "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",
+        "wandb",
+        "sync",
+        "--entity",
+        "jasincase"
+    ],
+    "state": "running",
+    "program": "-m __main__",
+    "git": {
+        "remote": "https://github.com/JasInCase/Metadating.git",
+        "commit": "97458c5961a2c8a55175bd66f60c5d9ddc519a97"
+    },
+    "email": "brightp@umich.edu",
+    "root": "C:/git/Metadating",
+    "host": "DESKTOP-N7BGT28",
+    "username": "Brighton",
+    "executable": "C:\\Users\\Brighton\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.9_qbz5n2kfra8p0\\python.exe",
+    "cpu_count": 8,
+    "cpu_count_logical": 16,
+    "cpu_freq": {
+        "current": 3801.0,
+        "min": 0.0,
+        "max": 3801.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 3801.0,
+            "min": 0.0,
+            "max": 3801.0
+        }
+    ],
+    "disk": {
+        "total": 930.8124961853027,
+        "used": 226.98112869262695
+    },
+    "gpu": "NVIDIA GeForce RTX 3070",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 3070",
+            "memory_total": 8589934592
+        }
+    ],
+    "memory": {
+        "total": 15.927825927734375
+    }
+}
