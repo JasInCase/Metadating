@@ -68,6 +68,12 @@ type IconProps = {
 
 const UsernameIcon = ({username, logout}  : IconProps) => {
 
+    const redirectHomePage = () => {
+
+        window.location.assign('/home')
+
+    }
+
     return (
 
         <div className='user-icon group'>
@@ -80,7 +86,7 @@ const UsernameIcon = ({username, logout}  : IconProps) => {
             </Typography>
 
             <span className="user-tooltip group-hover:delay-[0ms] 
-                group-hover:scale-100">
+                group-hover:scale-100 hover:bg-pink-400 hover:cursor-pointer hover:duration-100" onClick={redirectHomePage}>
                 Hello <span className='text-black'>{username}</span>!
             </span>
 

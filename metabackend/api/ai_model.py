@@ -41,9 +41,9 @@ def complete(prompt: str) -> str:
           temperature = 0.9, max_tokens=48, suffix="\n\nUSER:", n=1,
           stop=stop)
     # print("API Call Result:\n", res)
-    print()
-    print(prompt)
-    print(res['choices'][0]['text'])
+    # print()
+    # print(prompt)
+    # print(res['choices'][0]['text'])
     return res['choices'][0]['text']
 
 
@@ -113,7 +113,7 @@ def respond(profile, prev_messages: str):
     USER:...
     ---
     """
-    name = profile['name'].upper()
+    # name = profile['name'].upper()
     prompt = build_profile(profile) + '\n\n' + prev_messages
     # prompt += f'\n\n{name}:[insert]\n\nUSER:'
     api_message = complete_fully(prompt)
@@ -153,14 +153,15 @@ def respond(profile, prev_messages: str):
 def ai_response(array_msgs, input_profile):
     # string_to_append = data["userMessage"]
     name = input_profile["name"].upper()
+    # print("Array messages: ", array_msgs)
     input_messages = ""
-    for index, msg in enumerate(array_msgs):
-        if index % 2 == 0:
+    for msg_object in array_msgs:
+        if msg_object['is_user'] is True:
             input_messages = input_messages + "USER:\n\n"
-            input_messages = input_messages + msg + "\n\n"
+            input_messages = input_messages + msg_object['text'] + "\n\n"
         else:
             input_messages = input_messages + name + ":\n\n"
-            input_messages = input_messages + msg + "\n\n"
+            input_messages = input_messages + msg_object['text'] + "\n\n"
     input_messages = input_messages + name + ": "
 
     to_return = respond(input_profile, input_messages)

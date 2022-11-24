@@ -1,22 +1,115 @@
 """Returns a hello world string!"""
 import flask
 import metabackend
-import json
 from flask import request
 from metabackend.api.ai_model import ai_response 
-from metabackend.api.db import find_match, update_conversation_with_profile
+from metabackend.api.db import find_match, update_conversation_with_profile, find_real_conversation, update_real_conversation, find_practice_conversation, update_practice_conversation, insert_practice_conversation
+import time
+import json
+from bson import json_util
+
+@metabackend.app.route('/api/v1/real-conversation/<real_conversation_id>/', methods=['GET'])
+def get_real_conversation(real_conversation_id):
+    real_conversation = find_real_conversation(real_conversation_id, None, None)
+    match_id = str(real_conversation['match_id'])
+    match = find_match(match_id)
+    match_name = match['name']
+    context = {
+        'realConversation': json.loads(json_util.dumps(real_conversation)),
+        'matchName': match_name
+    }
+    return flask.jsonify(**context)
 
 
+@metabackend.app.route('/api/v1/real-conversation/<real_conversation_id>/message/', methods=['POST'])
+def add_message_to_real_conversation(real_conversation_id):
+    data = request.get_json()
+    message = data["message"]
+    is_user = data["is_user"]
+
+    real_conversation = find_real_conversation(real_conversation_id, None, None)
+    # TODO: Error handling if conversation does not exist
+
+    new_message = {'text': message, 'is_user': is_user}
+    new_messages = real_conversation['messages']
+    if new_messages is None:
+        new_messages = []
+    new_messages.append(new_message)
+    update_real_conversation(real_conversation_id, new_messages)
+    
+    context = {
+        'success': True
+    }
+    return flask.jsonify(**context)
+
+
+# TODO: Test all routes and add practice conversation routes
+
+@metabackend.app.route('/api/v1/practice-conversation/<practice_conversation_id>/', methods=['GET'])
+def get_practice_conversation(practice_conversation_id):
+    practice_conversation = find_practice_conversation(practice_conversation_id)
+    match_id = str(practice_conversation['match_id'])
+    match = find_match(match_id)
+    match_name = match['name']
+    context = {
+        'practiceConversation': json.loads(json_util.dumps(practice_conversation)),
+        'matchName': match_name
+    }
+    return flask.jsonify(**context)
+
+@metabackend.app.route('/api/v1/practice-conversation/<practice_conversation_id>/message/', methods=['POST'])
+def add_message_to_practice_conversation(practice_conversation_id):
+    data = request.get_json()
+    message = data["message"]
+
+    practice_conversation = find_practice_conversation(practice_conversation_id)
+    new_message = {'text': message, 'is_user': True}
+    new_messages = practice_conversation['messages']
+    if new_messages is None:
+        new_messages = []
+    new_messages.append(new_message)
+    
+    match_id = str(practice_conversation['match_id'])
+    match = find_match(match_id)
+    aiMessage = ai_response(new_messages, match)
+    aiMessageObject = {'text': aiMessage, 'is_user': False}
+    new_messages.append(aiMessageObject)
+    update_practice_conversation(practice_conversation_id, new_messages)
+    
+    context = {
+        'success': True,
+        'aiMessage': aiMessage
+    }
+    return flask.jsonify(**context)
+
+@metabackend.app.route('/api/v1/practice-conversation/', methods=['POST'])
+def create_practice_conversation():
+    data = request.get_json()
+    user_id = data["userId"]
+    match_id = data["matchId"]
+
+    real_conversation = find_real_conversation(None, user_id, match_id)
+    # print(real_conversation)
+    messages = real_conversation['messages']
+    if messages is None:
+        messages = []
+    number_of_messages_in_real_conversation = len(messages)
+    practice_conversation = insert_practice_conversation(match_id, user_id, messages, number_of_messages_in_real_conversation)
+    practice_conversation_id = str(practice_conversation.inserted_id)
+
+    context = {
+        'practiceConversationId': practice_conversation_id
+    }
+    return flask.jsonify(**context)
+
+'''
 @metabackend.app.route('/api/v1/getmsg', methods=['POST'])
 def respond_to_message_frontend():
     data = request.get_json()
     user_message = data["userMessage"]
-    # messages = data["msgs"]
     match_id = data["matchId"]
     user_id = data["userId"]
     match = find_match(match_id)
-    
-    # TODO: Exception handling if match id is not found
 
     messages = []
 
@@ -41,3 +134,4 @@ def respond_to_message_frontend():
 #     }
 
     return flask.jsonify(**context)
+'''

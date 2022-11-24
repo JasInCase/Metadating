@@ -6,7 +6,7 @@ URLs include:
 """
 import flask
 import metabackend
-from metabackend.api.db import add_user, find_user
+from metabackend.api.db import insert_user, find_user
 import metabackend
 from metabackend.api.utils import check_login, react_site_redirect
 import hashlib
@@ -85,11 +85,13 @@ def do_create():
     if 'username' not in flask.request.json or 'password' not in flask.request.json:
         flask.abort(400)
 
+    name = flask.request.json['name']
+    email = flask.request.json['email']
     username = flask.request.json['username']
     pwd = flask.request.json['password']
 
     # Error checking
-    if not username or not pwd:
+    if not name or not email or not username or not pwd:
         flask.abort(400)
 
     # Make sure the user doesn't already exist
@@ -103,10 +105,11 @@ def do_create():
     stored_pwd = '$'.join([algo, salt, hashed_pwd])
 
     # Add the user to the database
-    response = add_user(username, stored_pwd)
+    response = insert_user(name, email, username, stored_pwd)
     new_user_id = str(response.inserted_id)
 
     if response.acknowledged:
+        flask.session['username'] = username
         flask.session['user_id'] = new_user_id
     else:
         flask.abort(503)
