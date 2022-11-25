@@ -11,7 +11,7 @@ json.dump()
 
 from transformers import GPT2TokenizerFast
 
-from template import build_profile, example_messages
+from template import build_line
 
 tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
 
@@ -93,20 +93,6 @@ def max_unique_tok(msgs, count):
     return res
 
 
-def build_line(user, select, count):
-    """Create a JSONL line for a user, with a prompt and completion.
-
-    Parameters:
-        user - Dict type with parameters "name", "age", "messages", etc.
-        select - Function for picking n messages from the list.
-        count - Number of messages to present to GPT-3.
-    """
-    messages = select(user['messages'], count)
-    res = '{"prompt": "' + build_profile(user, False) + \
-          '", "completion": "' + example_messages(messages) + '"}'
-    return res.encode('unicode_escape').decode('utf-8') + '\n'
-
-
 def unescape(text: str):
     """Unescape html and unicode markers to get the original text."""
     # text = text.encode('unicode-escape')
@@ -176,8 +162,8 @@ def main(args):
         #      r'\x' not in msg and
         #      len(tokenizer(msg)['input_ids']) < args.max_tokens)
         # ]
-        user["messages"] = msgs
-        train += build_line(user, select, args.n)
+        # user["messages"] = msgs
+        train += build_line(user, select(msgs, args.n))
 
     with open(args.output_file, 'w', encoding='utf-8') as file:
         file.write(train)

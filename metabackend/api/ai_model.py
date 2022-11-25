@@ -1,21 +1,21 @@
 """Sends requests to openai to complete text."""
 import openai
 import datetime
-import metabackend
-import flask
-from flask import request
 
-from template import build_profile
+from .template import build_profile
 
 # OC DO NOT STEAL:
 openai.api_key = "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"
 completion = openai.Completion
 
+DAVINCI = "text-davinci-002"
+CURIE = "curie:ft-jasincase-2022-11-22-03-03-23"
+
 last_minute = None
 spent = 0
 MAX_SPENT = 60
 
-def complete(prompt: str, engine="text-davinci-002", temperature=0.9) -> str:
+def complete(prompt: str, engine=DAVINCI, **kwargs) -> str:
     global last_minute
     global spent
     """Send a request to GPT-3's Davinci model to complete a text prompt."""
@@ -28,10 +28,8 @@ def complete(prompt: str, engine="text-davinci-002", temperature=0.9) -> str:
     if spent > MAX_SPENT:
         return "GPT-3 LIMIT REACHED. PLEASE WAIT.\n\n"
 
-    stop = ["\n\nUSER:"]
-    res = completion.create(engine=engine, prompt=prompt,
-          temperature=temperature, max_tokens=48, suffix="\n\nUSER:", n=1,
-          stop=stop)
+    res = completion.create(engine=engine, prompt=prompt, max_tokens=64, n=1,
+          **kwargs)
     # print("API Call Result:\n", res)
     # print()
     # print(prompt)
@@ -39,14 +37,16 @@ def complete(prompt: str, engine="text-davinci-002", temperature=0.9) -> str:
     return res['choices'][0]['text']
 
 
-def complete_fully(prompt: str) -> str:
-    """Send requests to GPT-3 until two newline characters are found.
+# DEPRECATED:
+"""
+def complete_fully(prompt: str, engine=DAVINCI, temperature=0.9):
+    Send requests to GPT-3 until two newline characters are found.
     
     To prevent infinite loops, only up to five requests are sent.
-    """
+    
     # print("Prompt to API:", prompt)
     to_return_string = ""
-    completed_string = complete(prompt).strip()
+    completed_string = complete(prompt, engine, temperature).strip()
     # for i in range(0,5):
     #     if not completed_string.endswith('\n'):
     #         print("Made second call to check length")
@@ -64,6 +64,7 @@ def complete_fully(prompt: str) -> str:
     to_return_string = completed_string
     # print("String returned:", to_return_string)
     return to_return_string
+"""
 
 
 def respond(profile, prev_messages: str):
@@ -87,9 +88,41 @@ def respond(profile, prev_messages: str):
     USER:...
     ---
     """
-    prompt = build_profile(profile) + '\n\n' + prev_messages
-    api_message = complete_fully(prompt)
+    prompt = build_profile(profile)
+    prompt = prompt.replace("Example Messages\n###", profile['examples'])
+    prompt = prompt + "\n\nTinder Conversation\n###\n\n" + prev_messages
+    api_message = complete(prompt, suffix="\n\nUSER:", stop=["\n\nUSER:"])
+    # print(prompt + api_message)
     return api_message
+
+
+def generate_examples(input_profile):
+    """Create example messages that this profile might utter.
+    
+    Parameters:
+        input_profile - Dictionary with keys `name`, `age`, `gender`,
+                        `hometown`, and `interests.
+    
+    Output format:
+    ```
+    Example Messages
+    ###
+     - <msg 1>
+     - <msg 2>
+     - <msg 3>
+    ```
+    """
+    prompt = build_profile(input_profile, interests=False)
+
+    api_message = None
+    while not api_message:
+        api_message = complete(prompt, engine=CURIE, temperature=0.8)
+        # assume last is incomplete
+        api_message = filter(lambda x: x != "", api_message.split('\n')[:-1])
+
+    api_message = "Example Messages\n###\n - " + '\n - '.join(api_message)
+    return api_message
+
 
 def ai_response(array_msgs, input_profile):
     name = input_profile["name"].upper()
@@ -106,3 +139,16 @@ def ai_response(array_msgs, input_profile):
 
     to_return = respond(input_profile, input_messages)
     return to_return
+
+
+if __name__ == "__main__":
+    profile = {
+        'name': "Jayce Wan",
+        'age': "19",
+        'gender': "M",
+        'city': "Los Angeles",
+        'country': "California",
+        'interests': "Surfboards, boba"
+    }
+    profile['examples'] = generate_examples(profile)
+    ai_response([], profile)
