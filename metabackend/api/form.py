@@ -5,7 +5,7 @@ from .db import insert_match, insert_real_conversation
 
 @metabackend.app.route('/api/v1/form/', methods=['POST'])
 def store_form_data():
-    """Returns confirmation that form data was recieved"""
+    """Return confirmation that form data was received"""
 
     name = flask.request.json["name"]
     age = flask.request.json["age"]

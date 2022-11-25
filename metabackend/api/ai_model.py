@@ -13,7 +13,7 @@ last_minute = None
 spent = 0
 MAX_SPENT = 60
 
-def complete(prompt: str) -> str:
+def complete(prompt: str, engine="text-davinci-002", temperature=0.9) -> str:
     global last_minute
     global spent
     """Send a request to GPT-3's Davinci model to complete a text prompt."""
@@ -26,41 +26,15 @@ def complete(prompt: str) -> str:
     if spent > MAX_SPENT:
         return "GPT-3 LIMIT REACHED. PLEASE WAIT.\n\n"
 
-    # if '[insert]' in prompt:
-    #     delimited_str = prompt.split('[insert]')
-    #     # context, suffix = prompt.split('[insert]')
-    #     context = delimited_str[0]
-    #     suffix = "\n\n"
-    #     res = completion.create(engine="text-davinci-002", prompt=context,
-    #         suffix=suffix, temperature=0.9)
-    # else:
     stop = ["\n\nUSER:"]
-    res = completion.create(engine="text-davinci-002", prompt=prompt,
-          temperature = 0.9, max_tokens=48, suffix="\n\nUSER:", n=1,
+    res = completion.create(engine=engine, prompt=prompt,
+          temperature=temperature, max_tokens=48, suffix="\n\nUSER:", n=1,
           stop=stop)
     # print("API Call Result:\n", res)
     # print()
     # print(prompt)
     # print(res['choices'][0]['text'])
     return res['choices'][0]['text']
-
-
-# def complete_fully(prompt: str) -> str:
-#     """Send requests to GPT-3 until two newline characters are found.
-    
-#     To prevent infinite loops, only up to five requests are sent.
-#     """
-#     completion = complete(prompt)
-#     print("First complete call:[", completion, "]")
-#     for i in range(5):
-#         if completion.count('\n\n') > 1:
-#             print("Done with completion.")
-#             break
-#         completion += complete(prompt + completion)
-#         print(i + 1, "th complete call:[", completion, "]")
-#     completion = '\n\n' + completion.split('\n\n')[1]
-#     print("returning completion?[", completion, "]")
-    # return completion
 
 
 def complete_fully(prompt: str) -> str:
@@ -130,45 +104,11 @@ def respond(profile, prev_messages: str):
     USER:...
     ---
     """
-    # name = profile['name'].upper()
     prompt = build_profile(profile) + '\n\n' + prev_messages
-    # prompt += f'\n\n{name}:[insert]\n\nUSER:'
     api_message = complete_fully(prompt)
     return api_message
 
-# @metabackend.app.route('/api/v1/getmsg', methods=['POST'])
-# def respond_to_message_frontend():
-
-#     data = request.get_json()
-#     string_to_append = data["userMessage"]
-
-#     profile = {
-#         'name': "Jayce",
-#         'age': '24',
-#         'gender': "male",
-#         'interests': "Metal, sushi, astrology, space, music"
-#     }
-#     prev_messages = """USER:
-
-#     I think your city is pretty but you're even prettier ;)
-
-#     JAYCE:
-
-#     heh witty. i think im pretty too
-
-#     USER:
-
-#     """ + string_to_append
-
-#     # print(respond(profile, prev_messages)
-#     to_return = respond(profile, prev_messages)
-#     context = {
-#         'apiMessage': to_return
-#     }
-#     return flask.jsonify(**context)
-
 def ai_response(array_msgs, input_profile):
-    # string_to_append = data["userMessage"]
     name = input_profile["name"].upper()
     # print("Array messages: ", array_msgs)
     input_messages = ""
@@ -183,26 +123,3 @@ def ai_response(array_msgs, input_profile):
 
     to_return = respond(input_profile, input_messages)
     return to_return
-
-
-# if __name__ == "__main__":
-#     profile = {
-#         'name': "Jayce",
-#         'age': '24',
-#         'gender': "male",
-#         'interests': "Metal, sushi, astrology, space, music"
-#     }
-#     prev_messages = """USER:
-
-#     I think your city is pretty but you're even prettier ;)
-
-#     JAYCE:
-
-#     heh witty. i think im pretty too
-
-#     USER:
-
-#     what kinda music do you like?"""
-
-#     print(respond(profile, prev_messages))
-    
