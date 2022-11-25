@@ -89,7 +89,10 @@ def respond(profile, prev_messages: str):
     ---
     """
     prompt = build_profile(profile)
-    prompt = prompt.replace("Example Messages\n###", profile['examples'])
+    if 'examples' in profile:
+        prompt = prompt.replace("Example Messages\n###", profile['examples'])
+    else:
+        prompt = prompt.replace("Example Messages\n###", "")
     prompt = prompt + "\n\nTinder Conversation\n###\n\n" + prev_messages
     api_message = complete(prompt, suffix="\n\nUSER:", stop=["\n\nUSER:"])
     # print(prompt + api_message)
