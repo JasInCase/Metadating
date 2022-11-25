@@ -5,6 +5,8 @@ import metabackend
 import flask
 from flask import request
 
+from template import build_profile
+
 # OC DO NOT STEAL:
 openai.api_key = "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"
 completion = openai.Completion
@@ -62,25 +64,6 @@ def complete_fully(prompt: str) -> str:
     to_return_string = completed_string
     # print("String returned:", to_return_string)
     return to_return_string
-
-
-def build_profile(profile):
-    """Fill profile data into a template for use by GPT-3.
-
-    Parameters:
-        profile - Dictionary with keys `name`, `age`, `gender`, and
-                  `interests`.
-    """
-    res = """Example Tinder conversation
-
-$name$'s profile:
-Age: $age$
-Gender: $gender$
-Interests: $interests$
-Traits: Non-apologetic, creative, inquisitive, enthusiastic, flirty"""
-    for key in ('name', 'age', 'gender', 'interests'):
-        res = res.replace(f'${key}$', profile[key])
-    return res
 
 
 def respond(profile, prev_messages: str):
