@@ -2,18 +2,24 @@
 import flask
 import metabackend
 from .db import insert_match, insert_real_conversation
+from .ai_model import generate_examples
 
 @metabackend.app.route('/api/v1/form/', methods=['POST'])
 def store_form_data():
-    """Returns confirmation that form data was recieved"""
+    """Return confirmation that form data was received"""
 
     name = flask.request.json["name"]
     age = flask.request.json["age"]
     gender = flask.request.json["gender"]
+    hometown = flask.request.json["hometown"]
     interests = flask.request.json["interests"]
     user_id = flask.request.json["userId"]
 
-    match = {'name': name, 'age': age, 'gender': gender, 'interests': interests, 'user_id': user_id}
+    match = {'name': name, 'age': age, 'gender': gender, 'hometown': hometown,
+             'interests': interests, 'user_id': user_id}
+    examples = generate_examples(match)
+    match['examples'] = examples
+
     response = insert_match(match)
     match_id = str(response.inserted_id)
     print(match_id)

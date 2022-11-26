@@ -1,9 +1,6 @@
 """Sends requests to openai to complete text."""
 import openai
 import datetime
-import metabackend
-import flask
-from flask import request
 
 from metabackend.api.template import build_profile
 # from template import build_profile
@@ -12,11 +9,14 @@ from metabackend.api.template import build_profile
 openai.api_key = "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"
 completion = openai.Completion
 
+DAVINCI = "text-davinci-002"
+CURIE = "curie:ft-jasincase-2022-11-22-03-03-23"
+
 last_minute = None
 spent = 0
 MAX_SPENT = 60
 
-def complete(prompt: str) -> str:
+def complete(prompt: str, engine=DAVINCI, **kwargs) -> str:
     global last_minute
     global spent
     """Send a request to GPT-3's Davinci model to complete a text prompt."""
@@ -29,18 +29,8 @@ def complete(prompt: str) -> str:
     if spent > MAX_SPENT:
         return "GPT-3 LIMIT REACHED. PLEASE WAIT.\n\n"
 
-    # if '[insert]' in prompt:
-    #     delimited_str = prompt.split('[insert]')
-    #     # context, suffix = prompt.split('[insert]')
-    #     context = delimited_str[0]
-    #     suffix = "\n\n"
-    #     res = completion.create(engine="text-davinci-002", prompt=context,
-    #         suffix=suffix, temperature=0.9)
-    # else:
-    stop = ["\n\nUSER:"]
-    res = completion.create(engine="text-davinci-002", prompt=prompt,
-          temperature = 0.9, max_tokens=48, suffix="\n\nUSER:", n=1,
-          stop=stop)
+    res = completion.create(engine=engine, prompt=prompt, max_tokens=64, n=1,
+          **kwargs)
     # print("API Call Result:\n", res)
     # print()
     # print(prompt)
@@ -48,32 +38,16 @@ def complete(prompt: str) -> str:
     return res['choices'][0]['text']
 
 
-# def complete_fully(prompt: str) -> str:
-#     """Send requests to GPT-3 until two newline characters are found.
-    
-#     To prevent infinite loops, only up to five requests are sent.
-#     """
-#     completion = complete(prompt)
-#     print("First complete call:[", completion, "]")
-#     for i in range(5):
-#         if completion.count('\n\n') > 1:
-#             print("Done with completion.")
-#             break
-#         completion += complete(prompt + completion)
-#         print(i + 1, "th complete call:[", completion, "]")
-#     completion = '\n\n' + completion.split('\n\n')[1]
-#     print("returning completion?[", completion, "]")
-    # return completion
-
-
-def complete_fully(prompt: str) -> str:
-    """Send requests to GPT-3 until two newline characters are found.
+# DEPRECATED:
+"""
+def complete_fully(prompt: str, engine=DAVINCI, temperature=0.9):
+    Send requests to GPT-3 until two newline characters are found.
     
     To prevent infinite loops, only up to five requests are sent.
-    """
+    
     # print("Prompt to API:", prompt)
     to_return_string = ""
-    completed_string = complete(prompt).strip()
+    completed_string = complete(prompt, engine, temperature).strip()
     # for i in range(0,5):
     #     if not completed_string.endswith('\n'):
     #         print("Made second call to check length")
@@ -91,6 +65,7 @@ def complete_fully(prompt: str) -> str:
     to_return_string = completed_string
     # print("String returned:", to_return_string)
     return to_return_string
+"""
 
 
 def respond(profile, prev_messages: str):
@@ -114,45 +89,46 @@ def respond(profile, prev_messages: str):
     USER:...
     ---
     """
-    # name = profile['name'].upper()
-    prompt = build_profile(profile) + '\n\n' + prev_messages
-    # prompt += f'\n\n{name}:[insert]\n\nUSER:'
-    api_message = complete_fully(prompt)
+    prompt = build_profile(profile)
+    if 'examples' in profile:
+        prompt = prompt.replace("Example Messages\n###", profile['examples'])
+    else:
+        prompt = prompt.replace("Example Messages\n###", "")
+    prompt = prompt + "\n\nTinder Conversation\n###\n\n" + prev_messages
+    api_message = complete(prompt, suffix="\n\nUSER:", stop=["\n\nUSER:"])
+    # print(prompt + api_message)
     return api_message
 
-# @metabackend.app.route('/api/v1/getmsg', methods=['POST'])
-# def respond_to_message_frontend():
 
-#     data = request.get_json()
-#     string_to_append = data["userMessage"]
+def generate_examples(input_profile):
+    """Create example messages that this profile might utter.
+    
+    Parameters:
+        input_profile - Dictionary with keys `name`, `age`, `gender`,
+                        `hometown`, and `interests.
+    
+    Output format:
+    ```
+    Example Messages
+    ###
+     - <msg 1>
+     - <msg 2>
+     - <msg 3>
+    ```
+    """
+    prompt = build_profile(input_profile, interests=False)
 
-#     profile = {
-#         'name': "Jayce",
-#         'age': '24',
-#         'gender': "male",
-#         'interests': "Metal, sushi, astrology, space, music"
-#     }
-#     prev_messages = """USER:
+    api_message = None
+    while not api_message:
+        api_message = complete(prompt, engine=CURIE, temperature=0.8)
+        # assume last is incomplete
+        api_message = filter(lambda x: x != "", api_message.split('\n')[:-1])
 
-#     I think your city is pretty but you're even prettier ;)
+    api_message = "Example Messages\n###\n - " + '\n - '.join(api_message)
+    return api_message
 
-#     JAYCE:
-
-#     heh witty. i think im pretty too
-
-#     USER:
-
-#     """ + string_to_append
-
-#     # print(respond(profile, prev_messages)
-#     to_return = respond(profile, prev_messages)
-#     context = {
-#         'apiMessage': to_return
-#     }
-#     return flask.jsonify(**context)
 
 def ai_response(array_msgs, input_profile):
-    # string_to_append = data["userMessage"]
     name = input_profile["name"].upper()
     # print("Array messages: ", array_msgs)
     input_messages = ""
@@ -169,24 +145,14 @@ def ai_response(array_msgs, input_profile):
     return to_return
 
 
-# if __name__ == "__main__":
-#     profile = {
-#         'name': "Jayce",
-#         'age': '24',
-#         'gender': "male",
-#         'interests': "Metal, sushi, astrology, space, music"
-#     }
-#     prev_messages = """USER:
-
-#     I think your city is pretty but you're even prettier ;)
-
-#     JAYCE:
-
-#     heh witty. i think im pretty too
-
-#     USER:
-
-#     what kinda music do you like?"""
-
-#     print(respond(profile, prev_messages))
-    
+if __name__ == "__main__":
+    profile = {
+        'name': "Jayce Wan",
+        'age': "19",
+        'gender': "M",
+        'city': "Los Angeles",
+        'country': "California",
+        'interests': "Surfboards, boba"
+    }
+    profile['examples'] = generate_examples(profile)
+    ai_response([], profile)

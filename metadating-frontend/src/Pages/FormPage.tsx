@@ -13,9 +13,10 @@ import {
   ImageList,
   ImageListItem,
 } from "@mui/material";
-import { useNavigate } from 'react-router-dom';
+import { Form, useNavigate } from 'react-router-dom';
 import UserBadge from '../CommonComponents/UserBadge';
 import UserBadgeUpdated from '../CommonComponents/UserBadgeUpdated';
+import { HomeTwoTone } from '@mui/icons-material';
 
 export async function getMessageFromAPI() {
 
@@ -26,14 +27,15 @@ export async function getMessageFromAPI() {
 }
 
 
-export async function sendMessageToAPI(name: string, age: string, gender: string, interests: string) {
+export async function sendMessageToAPI(name: string, age: string, gender: string, hometown: string, interests: string) {
 
-    let data = [name, age, gender, interests]
+    let data = [name, age, gender, hometown, interests]
     let userId = window.localStorage.getItem("userId");
     const response = await axios.post('/api/v1/form', {
       name: name,
       age: age,
       gender: gender,
+      hometown: hometown,
       interests: interests,
       userId: userId,
     }, { headers: {
@@ -74,6 +76,7 @@ const FormPage = () => {
     const [name, setName] = useState('');
     const [age, setAge] = useState('');
     const [gender, setGender] = useState('');
+    const [hometown, setHometown] = useState('');
     const [interests, setInterests] = useState('');
 
     // This function is called when the input changes
@@ -88,6 +91,10 @@ const FormPage = () => {
     const genderInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         const enteredGender = event.target.value;
         setGender(enteredGender);
+    };
+    const hometownInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const enteredHometown = event.target.value;
+        setHometown(enteredHometown);
     };
     const interestsInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         const enteredInterests = event.target.value;
@@ -122,7 +129,7 @@ const FormPage = () => {
           return;
         }
 
-        sendMessageToAPI(name, age, gender, interests).then((apiMessage) => {
+        sendMessageToAPI(name, age, gender, hometown, interests).then((apiMessage) => {
 
             if (apiMessage === "") {
                 console.log("An error occurred when sending to the api");
@@ -217,6 +224,21 @@ const FormPage = () => {
                   value={gender}
                   onChange={genderInputHandler}
                   placeholder="Gender"
+                />
+              </FormControl>
+            </div>
+
+            <div className="p-2">
+              <FormControl fullWidth={true}>
+                <InputLabel htmlFor="hometown"> Hometown </InputLabel>
+                <OutlinedInput
+                  // className="input"
+                  id="hometown"
+                  fullWidth
+                  label="Hometown"
+                  value={hometown}
+                  onChange={hometownInputHandler}
+                  placeholder="City, Country/State"
                 />
               </FormControl>
             </div>
