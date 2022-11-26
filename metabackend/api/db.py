@@ -30,9 +30,11 @@ def insert_match(match):
     return db.matches.insert_one(match)
 
 
-def insert_user(username, password):
+def insert_user(name, email, username, password):
     """Add a user to the users collection."""
     user_obj = {
+        'name': name,
+        'email': email,
         'username': username,
         'password': password,
         'created': datetime.utcnow()

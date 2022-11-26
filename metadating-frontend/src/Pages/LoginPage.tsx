@@ -17,6 +17,8 @@ import {
 import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from "@mui/icons-material/Twitter";
+import CompanyTag from "../CommonComponents/CompanyTag";
+import MetadatingHeader from "../CommonComponents/MetadatingHeader";
 
 export async function getMessageFromAPI() {
     const response = await axios.get('/api/v1/hello/');
@@ -124,14 +126,7 @@ const LoginPage = () => {
           fixed={true}
           className="shadow-2xl rounded-3xl bg-purple-200"
         >
-          <Typography
-            className="pt-3 pb-1"
-            variant="h3"
-            component="h3"
-            align="center"
-          >
-            Welcome to Metadating!!
-          </Typography>
+          <MetadatingHeader prefixText="Log in to" />
 
           <div className="pt-3 pb-2">
             <div className="p-2">
@@ -242,6 +237,8 @@ const LoginPage = () => {
               </Grid>
             </Grid>
           </div>
+          
+          <CompanyTag />
         </Container>
       </div>
     );
