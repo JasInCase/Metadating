@@ -161,7 +161,7 @@ const SignUpPage = () => {
 
             window.localStorage.setItem("username", res.data.username);
             window.localStorage.setItem("userId", res.data.userId);
-            window.location.assign('/form');
+            window.location.assign('/home');
 
         })
         .catch(err => {
