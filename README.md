@@ -1,5 +1,9 @@
 # Metadating
 
+<center><img width="561" alt="metadating_ss" src="https://github.com/JasInCase/Metadating/assets/29879582/36288b43-3d17-4252-a864-0a80789d9ef2"></center>
+
+You can find a demo of the app <a href="https://www.youtube.com/watch?v=uCLP3tOa7M8"> here! </a>
+
 This repository contains both the frontend and backend for the metadating web app.
 
 Both of these can be run while in the metadating-frontend directory.
@@ -51,3 +55,5 @@ To test to make sure both the frontend and backend are running, visit the follow
 localhost:8000/api/v1/hello
 localhost:3000/
 ```
+
+NOTE: This app was ideated and implemented before the launch of ChatGPT.
